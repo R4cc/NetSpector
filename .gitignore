@@ -11,7 +11,7 @@
 *.sln.docstates
 
 # Database
-#*.db
+*.db
 *.db-shm
 *.db-wal
 
