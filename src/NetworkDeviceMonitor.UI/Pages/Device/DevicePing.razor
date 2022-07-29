@@ -15,8 +15,8 @@ else
     <div class="container" style="max-width: 80em; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em">
             <div class="col" style="min-width: 100%">
                 <RadzenCard >
-                    <div class="row" style="margin-bottom: 1em;">
-                        <h2>Ping @_device.IpAddress</h2>
+                    <div class="row" >
+                        <h2 style="margin-bottom: 0.8em;">Ping Monitor</h2>
                         <RadzenButton BusyText="Pinging ..." IsBusy=@_processing Click=@StartDevicePing Text="Start Ping" Style="margin-bottom: 1em; max-width: 10em; margin-left: 1em;"/>
                     </div>
                     <div class="row">
@@ -27,7 +27,10 @@ else
                                     <RadzenSeriesDataLabels/>
                                 </RadzenLineSeries>
                                 <RadzenCategoryAxis Padding="20" Min="1" Max="15" Step="1"/>
-                                <RadzenValueAxis Formatter="FormatAsMS" Min="0" Step="@(responseTimes.Count != 0 && responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime > 20 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime / 20 : 1)" Max="@(responseTimes.Count != 0 ? Convert.ToInt32(responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime) + 5 : 10)">
+                                <RadzenValueAxis Formatter="FormatAsMS" 
+                                                 Min="0" 
+                                                 Step="@(responseTimes.Count != 0 && responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime > 20 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime / 10 : 1)" 
+                                                 Max="@(responseTimes.Count != 0 ? Convert.ToInt32(responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime) + 5 : 10)">
                                     <RadzenGridLines Visible="true"/>
                                 </RadzenValueAxis>
                             </RadzenChart>
@@ -63,7 +66,7 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="show_chart" Style="vertical-align: middle"/>Average Ping:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderByDescending(b => b.ResponseTime).Average(b => b.ResponseTime) : "0") ms</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count(x => x.ResponseTime > 0) != 0 ? Math.Round(responseTimes.Where(b => b.ResponseTime > 0).Average(b => b.ResponseTime), 2) : "0") ms</h4>
                         </div>
                     </div>                    
                     
@@ -72,7 +75,7 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="arrow_downward" Style="vertical-align: middle"/>Minimum Ping:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderBy(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
                         </div>
                     </div>
 
@@ -81,7 +84,7 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="arrow_upward" Style="vertical-align: middle"/>Maximum Ping:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderBy(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
                         </div>
                     </div>                    
                     
@@ -90,7 +93,7 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="highlight_off" Style="vertical-align: middle"/>Packet Loss:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? decimal.Round((responseTimes.Where(r => r.ResponseTime != -1).Count() / responseTimes.Count)*100, 2) : "0")%</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count(r => r.ResponseTime < 0) != 0 ? System.Math.Round((decimal)responseTimes.Count(r => r.ResponseTime < 0) / responseTimes.Count()*100m, 2) : "0")%</h4>
                         </div>
                     </div>
                 </RadzenCard>
@@ -101,8 +104,8 @@ else
 
 
 @code {
-    //(responseTimes.Count != 0 ? Convert.ToInt32(responseTimes.OrderBy(b => b.ResponseTime).ToList()[0].ResponseTime) - 5 : 10)
-
+// 
+    
     [Parameter]
     public int deviceId { get; set; }
 
@@ -149,10 +152,11 @@ else
                 continue;
             }
 
+            // PRODUCTION
             responseTimes.Add(new DataItem() {ResponseTime = reply.RoundtripTime, Time = i});
             
             //DEBUG
-            //responseTimes.Add(new DataItem() {ResponseTime = new Random().Next(0, 100), Time = i});
+            //responseTimes.Add(new DataItem() {ResponseTime = new Random().Next(1, 100), Time = i});
 
             StateHasChanged();
             await Task.Delay(1000);
