@@ -1,0 +1,95 @@
+﻿@page "/network/{networkid:int}"
+
+@inject IUnitOfWork _uow
+@inject ScannerService _scannerService
+@inject NavigationManager Nav
+
+
+@if (_devices is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+<div class="container">
+    <div class="row">
+    
+        <h2>Network Devices</h2>
+        <RadzenButton BusyText="Scanning ..." IsBusy=@_processing Click=@ScanNetwork Text="Scan Network" Style="max-width: 10em; margin-bottom: 1em; margin-left: 1em"/>
+        </div>
+        <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Hostname</td>
+                    <td>Name</td>
+                    <td>IP Address</td>
+                    <td>MAC</td>
+                    <td>Vendor</td>
+                    <td>Last Seen</td>
+                    <td>Controls</td>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var device in _devices.OrderBy(d => d.Int32IpAddress))
+                {
+                    <tr>
+                        <td>@(device.Hostname ?? "N/A")</td>
+                        <td>@(device.Name ?? "-")</td>
+                        <td>@device.IpAddress</td>
+                        <td>@(!String.IsNullOrEmpty(device.MacAddress) ? device.MacAddress : "N/A")</td>
+                        <td>@(device.Manufacturer != null ? device.Manufacturer.Name : "N/A")</td>
+                        <td>@device.LastSeen.ToString("g")</td>
+                        <td>
+                            <RadzenButton Click=@(() => PingDevice(device.DeviceId)) Icon="contactless"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+}
+
+@code {
+    [Parameter]
+    public int networkId { get; set; }
+    private bool _processing;
+    private List<Device> _devices;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevices();
+    }
+
+    private async Task LoadDevices()
+    {
+        _devices = (await _uow.IDeviceRepository.GetDevicesFromNetworkId(networkId));
+    }    
+    
+    private async Task EditDevice(int deviceId)
+    {
+       Nav.NavigateTo($"/device/edit/{deviceId}");
+    }        
+    
+    private async Task PingDevice(int deviceId)
+    {
+       Nav.NavigateTo($"/device/ping/{deviceId}");
+    }    
+    
+    private async Task ScanNetwork()
+    {
+        _processing = true;
+        _devices = new List<Device>();
+        // this task delay is needed for the processing status to work.. dont ask me why
+        await Task.Delay(1);
+        var network = await _uow.INetworkRepository.GetNetworkFromId(networkId);
+        await _scannerService.StartScan(network);
+        await LoadDevices();
+        _processing = false;
+    }
+    
+}

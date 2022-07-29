@@ -1,0 +1,162 @@
+﻿@page "/device/ping/{deviceId:int}"
+@using System.Net
+@using System.Net.NetworkInformation
+
+@inject IUnitOfWork _uow
+@inject NavigationManager Nav
+@inject ScannerService _scanner
+
+@if (_device is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+    <div class="container" style="max-width: 80em; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em">
+            <div class="col" style="min-width: 100%">
+                <RadzenCard >
+                    <div class="row" style="margin-bottom: 1em;">
+                        <h2>Ping @_device.IpAddress</h2>
+                        <RadzenButton BusyText="Pinging ..." IsBusy=@_processing Click=@StartDevicePing Text="Start Ping" Style="margin-bottom: 1em; max-width: 10em; margin-left: 1em;"/>
+                    </div>
+                    <div class="row">
+                            <RadzenChart>
+                                <RadzenLegend Visible="false"/>
+                                <RadzenLineSeries Smooth="true" Data="@responseTimes.ToArray()" CategoryProperty="Time" ValueProperty="ResponseTime">
+                                    <RadzenMarkers MarkerType="MarkerType.Circle"/>
+                                    <RadzenSeriesDataLabels/>
+                                </RadzenLineSeries>
+                                <RadzenCategoryAxis Padding="20" Min="1" Max="15" Step="1"/>
+                                <RadzenValueAxis Formatter="FormatAsMS" Min="0" Step="@(responseTimes.Count != 0 && responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime > 20 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime / 20 : 1)" Max="@(responseTimes.Count != 0 ? Convert.ToInt32(responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime) + 5 : 10)">
+                                    <RadzenGridLines Visible="true"/>
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                    </div>
+                </RadzenCard>
+            </div>
+            <div class="col" Style="min-width: 20em">
+            <RadzenCard>
+                <h2 style="margin-bottom: 1em;">Device Information</h2>
+                <div class="row">
+                    <div class="col">
+                        <h4>Name: </h4>
+                        <h4>Hostname: </h4>
+                        <h4>IP Address: </h4>
+                        <h4>MAC Address: </h4>
+                        <h4>Last Seen: </h4>
+                    </div>
+                    <div class="col">
+                        <h4 style="font-weight: 400">@(String.IsNullOrEmpty(_device.Name) ? "N/A" : _device.Name)</h4>
+                        <h4 style="font-weight: 400">@_device.Hostname</h4>
+                        <h4 style="font-weight: 400">@_device.IpAddress</h4>
+                        <h4 style="font-weight: 400">@(String.IsNullOrEmpty(_device.MacAddress) ? "N/A" : _device.MacAddress)</h4>
+                        <h4 style="font-weight: 400">@_device.LastSeen.ToString("g")</h4>
+                    </div>
+                </div> 
+            </RadzenCard >
+            </div>
+            <div class="col" Style="min-width: 20em">
+                <RadzenCard>
+                    <h3>Pings</h3>
+                    <div class="row">
+                        <div class="col">
+                            <h4 style="vertical-align: middle"><RadzenIcon Icon="show_chart" Style="vertical-align: middle"/>Average Ping:</h4>
+                        </div>
+                        <div class="col">
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderByDescending(b => b.ResponseTime).Average(b => b.ResponseTime) : "0") ms</h4>
+                        </div>
+                    </div>                    
+                    
+                    <div class="row">
+                        <div class="col">
+                            <h4 style="vertical-align: middle"><RadzenIcon Icon="arrow_downward" Style="vertical-align: middle"/>Minimum Ping:</h4>
+                        </div>
+                        <div class="col">
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 style="vertical-align: middle"><RadzenIcon Icon="arrow_upward" Style="vertical-align: middle"/>Maximum Ping:</h4>
+                        </div>
+                        <div class="col">
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? responseTimes.OrderBy(b => b.ResponseTime).ToList()[0].ResponseTime : "0") ms</h4>
+                        </div>
+                    </div>                    
+                    
+                    <div class="row">
+                        <div class="col">
+                            <h4 style="vertical-align: middle"><RadzenIcon Icon="highlight_off" Style="vertical-align: middle"/>Packet Loss:</h4>
+                        </div>
+                        <div class="col">
+                            <h4 style="font-weight: 400">@(responseTimes.Count != 0 ? decimal.Round((responseTimes.Where(r => r.ResponseTime != -1).Count() / responseTimes.Count)*100, 2) : "0")%</h4>
+                        </div>
+                    </div>
+                </RadzenCard>
+        </div>
+    </div>
+}
+
+
+
+@code {
+    //(responseTimes.Count != 0 ? Convert.ToInt32(responseTimes.OrderBy(b => b.ResponseTime).ToList()[0].ResponseTime) - 5 : 10)
+
+    [Parameter]
+    public int deviceId { get; set; }
+
+    private Device _device;
+    private bool _processing;
+
+    // CHART
+    List<DataItem> responseTimes = new();
+    class DataItem
+    {
+        public double ResponseTime { get; set; }
+        public int Time { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevice();
+    }
+
+    string FormatAsMS(object value)
+    {
+        return ((double)value).ToString("0 ms");
+    }
+
+    private async Task LoadDevice()
+    {
+        _device = await _uow.IDeviceRepository.GetDetachedDeviceById(deviceId);
+    }
+
+    private async Task StartDevicePing()
+    {
+        responseTimes = new();
+        _processing = true;
+        for (int i = 1; i <= 15; i++)
+        {
+            var reply = await _scanner.PingDevice(IPAddress.Parse(_device.IpAddress));
+
+            // Set reply time to -1 if ping failed
+            if(reply.Status != IPStatus.Success)
+            {
+                responseTimes.Add(new DataItem() {ResponseTime = -1, Time = i});
+                StateHasChanged();
+                await Task.Delay(200);
+                continue;
+            }
+
+            responseTimes.Add(new DataItem() {ResponseTime = reply.RoundtripTime, Time = i});
+            
+            //DEBUG
+            //responseTimes.Add(new DataItem() {ResponseTime = new Random().Next(0, 100), Time = i});
+
+            StateHasChanged();
+            await Task.Delay(1000);
+        }
+        _processing = false;
+    }
+}

@@ -1,0 +1,114 @@
+﻿@page "/networks"
+
+@inject IUnitOfWork _uow
+@inject ManufacturerDataService ManufacturerDataService
+@inject NavigationManager Nav
+@inject DialogService DialogService
+
+
+
+@if (_networks is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <h1>Networks</h1>
+        </div>
+        <div class="row" style="margin-bottom: 1em">
+            <div class="col-2">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateNetwork>New Network</RadzenButton>
+                
+            </div>
+            <div class="col-4" style="margin-left: -2em">
+                <RadzenButton Click=ReloadManufacturerData IsBusy=_processing BusyText="Loading Data ...">Load Manufacturer Data</RadzenButton>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Network ID</td>
+                        <td>Subnetmask</td>
+                        <td>Clients</td>
+                        <td>Controls</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var network in _networks)
+                    {
+                        <tr>
+                            <td>@network.Name</td>
+                            <td>@network.IpNetworkId</td>
+                            <td>@network.SubnetMask</td>
+                            <td>@network.Devices.Count</td>
+                            <td>
+                                <RadzenButton Click=@(() => LoadClients(network.NetworkId)) Icon="devices" />
+                                <RadzenButton Click=@(() => RemoveNetwork(network)) ButtonStyle="ButtonStyle.Danger" Icon="delete" />
+
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    void OnClick(string buttonName)
+    {
+        System.Console.WriteLine($"{buttonName} clicked");
+    }
+
+    private List<Network> _networks;
+    private bool _processing;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNetworks();
+    }
+
+    private async Task LoadNetworks()
+    {
+        _networks = await _uow.INetworkRepository.GetAll();
+    }
+
+    private async Task ReloadManufacturerData()
+    {
+        _processing = true;
+        Thread.Sleep(1);
+        await ManufacturerDataService.RefreshManufacturerData();
+        _processing = false;
+    }
+
+    private async Task LoadClients(int networkId)
+    {
+        Nav.NavigateTo($@"/network/{networkId}");
+    }    
+
+    private async Task CreateNetwork()
+    {
+        Nav.NavigateTo($@"/network/create");
+    }    
+
+    private async Task RemoveNetwork(Network network)
+    {
+        bool? confirmDelete = (bool)await DialogService.Confirm("Are you sure you want to delete the network?", $"Delete {network.Name}?", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (confirmDelete is null)
+            return;
+
+        if(!(bool)confirmDelete)
+            return;
+
+        await _uow.INetworkRepository.Remove(network);
+        await _uow.SaveChangesAsync();
+        Nav.NavigateTo($@"/networks");
+    }
+}

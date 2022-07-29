@@ -1,0 +1,83 @@
+﻿@page "/network/create"
+
+@inject IUnitOfWork _uow
+@inject NavigationManager Nav
+
+
+@if (_network is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+    @if (_errorMessage is not null)
+    {
+        <a style="color: #ff0707">@_errorMessage</a>    
+    }
+    
+    <div class="container" style="max-width: 40em">
+        <div class="row" style="margin-bottom: 1em;">
+            <h3>Create a new Network</h3>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <h4>Network Name</h4>
+            <RadzenTextBox Style="margin-left: 0.8em" @bind-Value="_network.Name" />
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <h4>NetworkID</h4>
+            <RadzenTextBox Style="margin-left: 0.8em" @bind-Value="_network.IpNetworkId" Placeholder="192.168.1.0"/>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <h4>Subnetmask</h4>
+            <RadzenNumeric Style="margin-left: 0.8em" @bind-Value="_network.SubnetMask" Max=32 Min=1 Placeholder=24/>
+        </div>
+        <div class="row" >
+            <div class="col">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Click=CancelSubmit Style="min-width: 10em; float: right;">Cancel</RadzenButton>
+            </div>
+            <div class="col">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=ValidSubmit Style="min-width: 10em; float: right;">Save</RadzenButton>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    private Network _network = new();
+    private string _errorMessage = string.Empty;
+    
+    private async Task ValidSubmit()
+    {
+        if (!await IsValid())
+        {
+            // input is invalid
+            return;
+        }
+        
+        await _uow.INetworkRepository.Update(_network);
+        await _uow.SaveChangesAsync();
+        Nav.NavigateTo("/networks");
+    }
+    
+    private async Task CancelSubmit()
+    {
+        Nav.NavigateTo("/networks");
+    }
+
+    private async Task<bool> IsValid()
+    {
+        if (String.IsNullOrEmpty(_network.Name))
+        {
+            _errorMessage = "ERROR: Network name cannot be null!";
+            return false;
+        }
+
+        if (String.IsNullOrEmpty(_network.IpNetworkId))
+        {
+            _errorMessage = "ERROR: NetworkId cannot be null!";
+            return false;
+        }
+
+        _errorMessage = string.Empty;
+        return true;
+    }
+}

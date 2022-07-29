@@ -1,0 +1,49 @@
+﻿@page "/device/edit/{deviceId:int}"
+
+@inject IUnitOfWork _uow
+@inject NavigationManager Nav
+
+@if (_device is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+    <div class="container">
+        <div class="row"  style="margin-bottom: 1em">
+            <h4 class="mb-4">Name</h4>
+            <RadzenTextBox @bind-Value="_device.Name" />
+        </div>
+        <div class="row" style="margin-bottom: 1em">
+        </div>
+        
+    </div>
+}
+@code {
+    [Parameter]
+    public int deviceId { get; set; }
+
+    private Device _device;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevice();
+    }
+
+    private async Task LoadDevice()
+    {
+        _device = await _uow.IDeviceRepository.GetDetachedDeviceById(deviceId);
+    }
+
+    private async Task ValidSubmit()
+    {
+        await _uow.IDeviceRepository.Update(_device);
+        await _uow.SaveChangesAsync();
+        Nav.NavigateTo("/networks");
+    }
+    
+    private async Task CancelSubmit()
+    {
+        Nav.NavigateTo("/networks");
+    }
+}
