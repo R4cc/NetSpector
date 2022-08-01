@@ -9,6 +9,10 @@
         <div class="col" style="margin-left: 1em">
             <h1>Dashboard</h1>
             <h2>Networks</h2>
+            @if(_networks is not null && _networks.Count == 0)
+            {
+                <a>No networks set...</a>
+            }
         </div>
     </div>
     <div class="row">
@@ -45,13 +49,13 @@ else
         </RadzenCard>
         </div>
     }
-    </div>
+</div>
 }
 </div>
 </div>
 
 @code{
-    private List<NetworkDeviceMonitor.Domain.Models.Network> _networks;
+    private List<NetworkDeviceMonitor.Domain.Models.Network>? _networks;
 
     protected override async Task OnInitializedAsync()
     {

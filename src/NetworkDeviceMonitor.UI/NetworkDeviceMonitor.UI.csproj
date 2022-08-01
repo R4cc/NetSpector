@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-NetworkDeviceMonitor.UI-EA1F73E5-2112-4DD4-86DC-C938B04E81FD</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
