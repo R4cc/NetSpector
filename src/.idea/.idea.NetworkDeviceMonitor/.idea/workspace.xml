@@ -46,6 +46,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.5005688&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -120,7 +121,10 @@
       <workItem from="1658900682930" duration="13424000" />
       <workItem from="1658986737797" duration="4793000" />
       <workItem from="1659074709581" duration="5923000" />
-      <workItem from="1659082138789" duration="5017000" />
+      <workItem from="1659082138789" duration="5201000" />
+      <workItem from="1659332784679" duration="1435000" />
+      <workItem from="1659341815788" duration="102000" />
+      <workItem from="1659344539108" duration="5685000" />
     </task>
     <servers />
   </component>
@@ -131,6 +135,23 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ScannerService.cs</url>
+          <line>114</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Services\ScannerService.cs" initialLine="121" containingFunctionPresentation="method 'StartScan'">
+            <startOffsets>
+              <option value="4113" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4114" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Network" memberName="Devices" />

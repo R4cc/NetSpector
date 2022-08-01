@@ -99,7 +99,7 @@ else
 
     private async Task RemoveNetwork(Network network)
     {
-        bool? confirmDelete = (bool)await DialogService.Confirm("Are you sure you want to delete the network?", $"Delete {network.Name}?", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        bool? confirmDelete = (bool)await DialogService.Confirm("Are you sure you want to delete the network?", $"Delete {network.Name}?", new ConfirmOptions() { OkButtonText = "Confirm", CancelButtonText = "Cancel" });
 
         if (confirmDelete is null)
             return;
@@ -109,6 +109,6 @@ else
 
         await _uow.INetworkRepository.Remove(network);
         await _uow.SaveChangesAsync();
-        Nav.NavigateTo($@"/networks");
+        await LoadNetworks();
     }
 }

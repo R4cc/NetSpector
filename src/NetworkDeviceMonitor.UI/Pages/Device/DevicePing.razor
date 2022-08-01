@@ -1,6 +1,8 @@
 ﻿@page "/device/ping/{deviceId:int}"
 @using System.Net
 @using System.Net.NetworkInformation
+@using System.Globalization
+@using IsAliveLib
 
 @inject IUnitOfWork _uow
 @inject NavigationManager Nav
@@ -66,7 +68,7 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="show_chart" Style="vertical-align: middle"/>Average Ping:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count(x => x.ResponseTime > 0) != 0 ? Math.Round(responseTimes.Where(b => b.ResponseTime > 0).Average(b => b.ResponseTime), 2) : "0") ms</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count(x => x.ResponseTime > 0) != 0 ? Math.Round((decimal)responseTimes.Where(b => b.ResponseTime > 0).Average(b => b.ResponseTime), 2) : "0") ms</h4>
                         </div>
                     </div>                    
                     
@@ -116,7 +118,7 @@ else
     List<DataItem> responseTimes = new();
     class DataItem
     {
-        public double ResponseTime { get; set; }
+        public int ResponseTime { get; set; }
         public int Time { get; set; }
     }
 
@@ -144,16 +146,16 @@ else
             var reply = await _scanner.PingDevice(IPAddress.Parse(_device.IpAddress));
 
             // Set reply time to -1 if ping failed
-            if(reply.Status != IPStatus.Success)
+            if(!reply.success)
             {
-                responseTimes.Add(new DataItem() {ResponseTime = -1, Time = i});
+                responseTimes.Add(new DataItem() {ResponseTime = -1,Time = i});
                 StateHasChanged();
                 await Task.Delay(200);
                 continue;
             }
 
             // PRODUCTION
-            responseTimes.Add(new DataItem() {ResponseTime = reply.RoundtripTime, Time = i});
+            responseTimes.Add(new DataItem() {ResponseTime = reply.totalTime.Milliseconds, Time = i});
             
             //DEBUG
             //responseTimes.Add(new DataItem() {ResponseTime = new Random().Next(1, 100), Time = i});

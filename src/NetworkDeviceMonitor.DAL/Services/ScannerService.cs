@@ -1,7 +1,10 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using NetworkDeviceMonitor.Domain.Models;
 using System.Net.NetworkInformation;
 using System.Text;
+using IsAliveLib;
+using Microsoft.Extensions.Logging;
 using NetworkDeviceMonitor.DAL.Interfaces;
 
 namespace NetworkDeviceMonitor.DAL.Services;
@@ -16,6 +19,9 @@ public class ScannerService
     }
     public async Task StartScan(Network network)
     {
+        Stopwatch sw = new();
+        sw.Start();
+        
         // get all IPs in specified network
         List<IPAddress> ips = await GetIpHostRange(network.IpNetworkId, network.SubnetMask);
 
@@ -31,8 +37,11 @@ public class ScannerService
         Parallel.ForEach(ips, async ip =>
         {
             var reply = await PingDevice(ip);
-            
-            if (reply.Status != IPStatus.Success) return;
+
+            if (!reply.success)
+            {
+                return;
+            }
 
             // try to retrieve hostname
             string hostname = await GetHostnameFromIp(ip);
@@ -100,6 +109,9 @@ public class ScannerService
         
         await _uow.IDeviceRepository.BulkUpdate(devicesToUpdate);
         await _uow.IDeviceRepository.BulkCreate(devicesToCreate);
+        
+        sw.Stop();
+        Console.WriteLine($"{sw.ElapsedMilliseconds}");
     }
 
     /// <summary>
@@ -172,13 +184,13 @@ public class ScannerService
     /// <param name="ip">IP Address of a device</param>
     /// <param name="pingSender">Ping instance</param>
     /// <returns>Ping reply</returns>
-    public async Task<PingReply> PingDevice(IPAddress ip)
+    public async Task<IsAlivePayload> PingDevice(IPAddress ip)
     {
-        var pingSender = new Ping();
-        int timeout = 300;
-        
-        // Send ping
-        return await pingSender.SendPingAsync(ip, timeout);
+        IsAlive isAlive = new IsAlive(500);
+
+        IsAlivePayload payload = isAlive.check(ip, 0, IsAlive.NETWORK_PROTOCOL.ICMP);
+
+        return payload;
     }
 
     private async Task<bool> HasWebInterface(string hostname)
