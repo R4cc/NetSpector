@@ -22,7 +22,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b62f5ebc7d3a894c57871886c68c343e17f3c3274ce65a8154d53b45ca7c7a/Ping.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d9d9faea5e6ed6438a777ef8c6eed41261f81d8e86488ed923ad92564f54e/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ManufacturerDataService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ScannerService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/PingService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/CsvMappings/ManufacturerMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/Models/Device.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/Models/Network.cs" root0="FORCE_HIGHLIGHTING" />
@@ -124,7 +124,8 @@
       <workItem from="1659082138789" duration="5201000" />
       <workItem from="1659332784679" duration="1435000" />
       <workItem from="1659341815788" duration="102000" />
-      <workItem from="1659344539108" duration="6405000" />
+      <workItem from="1659344539108" duration="6903000" />
+      <workItem from="1659420434739" duration="304000" />
     </task>
     <servers />
   </component>
@@ -135,23 +136,6 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ScannerService.cs</url>
-          <line>114</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Services\ScannerService.cs" initialLine="121" containingFunctionPresentation="method 'StartScan'">
-            <startOffsets>
-              <option value="4113" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4114" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Network" memberName="Devices" />

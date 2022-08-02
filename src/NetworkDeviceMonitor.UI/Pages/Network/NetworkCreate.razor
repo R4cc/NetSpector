@@ -54,7 +54,7 @@ else
             return;
         }
         
-        await _uow.INetworkRepository.Update(_network);
+        await _uow.INetworkRepository.Create(_network);
         await _uow.SaveChangesAsync();
         Nav.NavigateTo("/networks");
     }

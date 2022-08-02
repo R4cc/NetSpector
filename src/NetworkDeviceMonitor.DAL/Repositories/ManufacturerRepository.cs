@@ -7,7 +7,7 @@ namespace NetworkDeviceMonitor.DAL.Repositories;
 
 public class ManufacturerRepository : IManufacturerRepository
 {
-    ApplicationDbContext _context;
+    readonly ApplicationDbContext _context;
     public ManufacturerRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -30,6 +30,6 @@ public class ManufacturerRepository : IManufacturerRepository
     
     public async Task Update(Manufacturer manufacturer)
     {
-        _context.Update(manufacturer);
+        await _context.SingleUpdateAsync(manufacturer);
     }
 }

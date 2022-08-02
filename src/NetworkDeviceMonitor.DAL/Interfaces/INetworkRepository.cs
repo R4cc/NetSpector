@@ -8,4 +8,5 @@ public interface INetworkRepository
     Task<Network> GetNetworkFromId(int networkId);
     Task Update(Network network);
     Task Remove(Network network);
+    Task Create(Network network);
 }

@@ -7,7 +7,7 @@ namespace NetworkDeviceMonitor.DAL.Repositories;
 
 public class DeviceRepository : IDeviceRepository
 {
-    ApplicationDbContext _context;
+    readonly ApplicationDbContext _context;
     public DeviceRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -27,7 +27,7 @@ public class DeviceRepository : IDeviceRepository
 
     public async Task Update(Device device)
     {
-        _context.Update(device);
+        await _context.SingleUpdateAsync(device);
     }
     
     public async Task BulkUpdate(List<Device> devices)

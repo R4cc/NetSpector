@@ -6,7 +6,7 @@
 
 @inject IUnitOfWork _uow
 @inject NavigationManager Nav
-@inject ScannerService _scanner
+@inject PingService Ping
 
 @if (_device is null)
 {
@@ -143,7 +143,7 @@ else
         _processing = true;
         for (int i = 1; i <= 15; i++)
         {
-            var reply = await _scanner.PingDevice(IPAddress.Parse(_device.IpAddress));
+            var reply = await Ping.PingDevice(IPAddress.Parse(_device.IpAddress));
 
             // Set reply time to -1 if ping failed
             if(!reply.success)

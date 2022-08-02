@@ -1,7 +1,7 @@
 ﻿@page "/network/{networkid:int}"
 
 @inject IUnitOfWork _uow
-@inject ScannerService _scannerService
+@inject PingService PingService
 @inject NavigationManager Nav
 
 
@@ -88,7 +88,7 @@ else
         // this task delay is needed for the processing status to work.. dont ask me why
         await Task.Delay(1);
         var network = await _uow.INetworkRepository.GetNetworkFromId(networkId);
-        await _scannerService.StartScan(network);
+        await PingService.ScanNetwork(network);
         await LoadDevices();
         _processing = false;
     }

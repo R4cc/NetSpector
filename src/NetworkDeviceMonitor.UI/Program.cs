@@ -26,7 +26,7 @@ builder.Services
 
 // Services
 builder.Services.AddTransient<NetworkRepository>();
-builder.Services.AddTransient<ScannerService>();
+builder.Services.AddTransient<PingService>();
 builder.Services.AddTransient<ManufacturerRepository>();
 builder.Services.AddTransient<ManufacturerDataService>();
 builder.Services.AddTransient<DeviceRepository>();

@@ -15,6 +15,12 @@ else
             <RadzenTextBox @bind-Value="_device.Name" />
         </div>
         <div class="row" style="margin-bottom: 1em">
+             <div class="col">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Click=CancelSubmit Style="min-width: 10em; float: right;">Cancel</RadzenButton>
+            </div>
+            <div class="col">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=ValidSubmit Style="min-width: 10em; float: right;">Save</RadzenButton>
+            </div>
         </div>
         
     </div>

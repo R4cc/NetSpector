@@ -9,19 +9,16 @@ using NetworkDeviceMonitor.DAL.Interfaces;
 
 namespace NetworkDeviceMonitor.DAL.Services;
 
-public class ScannerService
+public class PingService
 {
     private readonly IUnitOfWork _uow;
     
-    public ScannerService(IUnitOfWork uow)
+    public PingService(IUnitOfWork uow)
     {
         _uow = uow;
     }
-    public async Task StartScan(Network network)
+    public async Task ScanNetwork(Network network)
     {
-        Stopwatch sw = new();
-        sw.Start();
-        
         // get all IPs in specified network
         List<IPAddress> ips = await GetIpHostRange(network.IpNetworkId, network.SubnetMask);
 
@@ -47,8 +44,6 @@ public class ScannerService
             string hostname = await GetHostnameFromIp(ip);
             Manufacturer manufacturer = null;
 
-            //var hasWebInterface = await HasWebInterface(hostname);
-            
             // MAC address retrieval 
             var macAddress = MacResolverService.GetRemoteMac(ip.ToString(), ':');
 
@@ -109,9 +104,6 @@ public class ScannerService
         
         await _uow.IDeviceRepository.BulkUpdate(devicesToUpdate);
         await _uow.IDeviceRepository.BulkCreate(devicesToCreate);
-        
-        sw.Stop();
-        Console.WriteLine($"{sw.ElapsedMilliseconds}");
     }
 
     /// <summary>
@@ -191,24 +183,5 @@ public class ScannerService
         IsAlivePayload payload = isAlive.check(ip, 0, IsAlive.NETWORK_PROTOCOL.ICMP);
 
         return payload;
-    }
-
-    private async Task<bool> HasWebInterface(string hostname)
-    {
-        HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://" + hostname);
-        request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
-        request.Method = "HEAD";
-        try
-        {
-            var response = request.GetResponse();
-            // do something with response.Headers to find out information about the request
-            return true;
-        }
-        catch (WebException wex)
-        {
-            //set flag if there was a timeout or some other issues
-            return false;
-        }
-        return false;
     }
 }
