@@ -17,7 +17,10 @@ public class ApplicationDbContext : IdentityDbContext
         base.OnModelCreating(builder);
 
         var network = builder.Entity<Network>();
+        network.HasOne<Scan>().WithOne().HasForeignKey<Scan>(f => f.NetworkId);
+        
         network.HasMany<Device>().WithOne().OnDelete(DeleteBehavior.Cascade);
+        network.HasOne<Scan>().WithOne().OnDelete(DeleteBehavior.Cascade);
         network.HasData(new Network
         {
             Name = "Network #1",
@@ -33,4 +36,5 @@ public class ApplicationDbContext : IdentityDbContext
     public virtual DbSet<Network> Networks { get; set; }
     public virtual DbSet<Device> Devices { get; set; }
     public virtual DbSet<Manufacturer> Manufacturers { get; set; }
+    public virtual DbSet<Scan> Scans { get; set; }
 }

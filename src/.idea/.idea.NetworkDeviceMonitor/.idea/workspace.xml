@@ -19,6 +19,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/78ecbb2c8805cce0e72d95dbb958a5fceb51f63079fecdc2d51b6b4e21e23/Ping.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/974fa14c57bab8fe29f1bddd39b1a6548b9cc8cf9e0ef5e670c2407a56d9/String.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9d4f4ac7db6d2c5d183ab2d92602280ed4349fd6e6a1b6313546b3d01fdab5/ServiceProvider.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b62f5ebc7d3a894c57871886c68c343e17f3c3274ce65a8154d53b45ca7c7a/Ping.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d9d9faea5e6ed6438a777ef8c6eed41261f81d8e86488ed923ad92564f54e/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ManufacturerDataService.cs" root0="FORCE_HIGHLIGHTING" />
@@ -26,7 +27,6 @@
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/CsvMappings/ManufacturerMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/Models/Device.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/Models/Network.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.Domain/obj/Debug/net6.0/NetworkDeviceMonitor.Domain.AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.UI/Pages/Device/DeviceList.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.UI/Pages/Device/DevicePing.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
   </component>
@@ -72,6 +72,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
+      <browser name="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
@@ -95,6 +96,10 @@
         <option name="Build" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue=".NET Launch Settings Profile.NetworkDeviceMonitor.UI" />
+      <item itemvalue=".NET Launch Settings Profile.NetworkDeviceMonitor.UI: IIS Express" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -125,7 +130,11 @@
       <workItem from="1659332784679" duration="1435000" />
       <workItem from="1659341815788" duration="102000" />
       <workItem from="1659344539108" duration="6903000" />
-      <workItem from="1659420434739" duration="304000" />
+      <workItem from="1659420434739" duration="4628000" />
+      <workItem from="1659426216985" duration="5171000" />
+      <workItem from="1659438896594" duration="262000" />
+      <workItem from="1659439468763" duration="6489000" />
+      <workItem from="1659449462780" duration="171000" />
     </task>
     <servers />
   </component>
@@ -136,8 +145,26 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/PingService.cs</url>
+          <line>104</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Services\PingService.cs" initialLine="104" containingFunctionPresentation="method 'ScanNetwork'">
+            <startOffsets>
+              <option value="3756" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3813" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
+        <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="CronSchedule" />
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Network" memberName="Devices" />
       </pinned-members>
     </pin-to-top-manager>

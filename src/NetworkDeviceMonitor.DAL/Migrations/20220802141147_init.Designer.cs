@@ -11,8 +11,8 @@ using NetworkDeviceMonitor.DAL.Data;
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220729075638_Initial")]
-    partial class Initial
+    [Migration("20220802141147_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -228,14 +228,12 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastSeen")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MacAddress")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ManufacturerId")
@@ -271,11 +269,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Prefix")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ManufacturerId");
@@ -290,11 +286,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("IpNetworkId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SubnetMask")
@@ -312,6 +306,46 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                             Name = "Network #1",
                             SubnetMask = 24
                         });
+                });
+
+            modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Scan", b =>
+                {
+                    b.Property<int>("ScanId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CronSchedule")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("FirstExecuted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastExecuted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NetworkId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("NetworkId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("NetworkId2")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ScanId");
+
+                    b.HasIndex("NetworkId")
+                        .IsUnique();
+
+                    b.HasIndex("NetworkId1");
+
+                    b.HasIndex("NetworkId2")
+                        .IsUnique();
+
+                    b.ToTable("Scans");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -387,9 +421,31 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     b.Navigation("Network");
                 });
 
+            modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Scan", b =>
+                {
+                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", null)
+                        .WithOne()
+                        .HasForeignKey("NetworkDeviceMonitor.Domain.Models.Scan", "NetworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", "Network")
+                        .WithMany("Scans")
+                        .HasForeignKey("NetworkId1");
+
+                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", null)
+                        .WithOne()
+                        .HasForeignKey("NetworkDeviceMonitor.Domain.Models.Scan", "NetworkId2")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Network");
+                });
+
             modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Network", b =>
                 {
                     b.Navigation("Devices");
+
+                    b.Navigation("Scans");
                 });
 #pragma warning restore 612, 618
         }

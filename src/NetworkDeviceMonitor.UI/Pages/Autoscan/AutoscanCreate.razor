@@ -1,11 +1,11 @@
-﻿@page "/network/create"
+﻿@page "/autoscan/create"
 @using System.Net
 
 @inject IUnitOfWork _uow
 @inject NavigationManager Nav
 
 
-@if (_network is null)
+@if (_scan is null || _networks is null)
 {
     <a>Loading...</a>    
 }
@@ -14,23 +14,27 @@ else
     
     <div class="container" style="max-width: 40em">
         <div class="row" style="margin-bottom: 1em;">
-            <h3>Create a new Network</h3>
+            <h3>Create an Autoscan</h3>
         </div>
         @if (_errorMessage is not null)
         {
             <a style="color: #ff0707">@_errorMessage</a>    
         }
         <div class="row" style="margin-bottom: 1em;">
-            <h4>Network Name</h4>
-            <RadzenTextBox Style="margin-left: 0.8em" @bind-Value="_network.Name" />
+            <h4>Network</h4>
+            <RadzenDropDown AllowClear="false" TValue="int" Class="w-100" 
+                            TextProperty="Name"
+                            Data=@(_networks)
+                            ValueProperty="NetworkId"
+                            Change="@(args => OnDropDownChange(args))"/>
         </div>
         <div class="row" style="margin-bottom: 1em;">
-            <h4>NetworkID</h4>
-            <RadzenTextBox Style="margin-left: 0.8em" @bind-Value="_network.IpNetworkId" Placeholder="192.168.1.0"/>
+            <h4>Schedule</h4>
+            <RadzenTextBox Style="margin-left: 0.8em" @bind-Value="_scan.CronSchedule" Placeholder="50 * * * *"/>
         </div>
         <div class="row" style="margin-bottom: 1em;">
-            <h4>Subnetmask</h4>
-            <RadzenNumeric Style="margin-left: 0.8em" @bind-Value="_network.SubnetMask" Max=32 Min=1 Placeholder=24 />
+            <h4>Activate?</h4>
+            <RadzenCheckBox @bind-Value="_scan.IsActive" />
         </div>
         <div class="row" >
             <div class="col">
@@ -43,9 +47,15 @@ else
     </div>
 }
 @code {
-    private Network _network = new();
+    private Scan _scan = new();
+    private List<Network> _networks;
     private string _errorMessage = string.Empty;
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNetworks();
+    }
+
     private async Task ValidSubmit()
     {
         if (!await IsValid())
@@ -54,47 +64,29 @@ else
             return;
         }
         
-        await _uow.INetworkRepository.Create(_network);
+        await _uow.IScanRepository.Create(_scan);
         await _uow.SaveChangesAsync();
-        Nav.NavigateTo("/networks");
+        Nav.NavigateTo("/autoscans");
+    }
+
+    private async Task LoadNetworks()
+    {
+        _networks = await _uow.INetworkRepository.GetAll();
     }
     
     private async Task CancelSubmit()
     {
-        Nav.NavigateTo("/networks");
+        Nav.NavigateTo("/autoscans");
     }
 
     private async Task<bool> IsValid()
     {
-        if (String.IsNullOrEmpty(_network.Name))
-        {
-            _errorMessage = "ERROR: Network name cannot be null!";
-            return false;
-        }
-
-        if (String.IsNullOrEmpty(_network.IpNetworkId))
-        {
-            _errorMessage = "ERROR: NetworkId cannot be null!";
-            return false;
-        }
-
-        if (_network.SubnetMask > 31 || _network.SubnetMask < 1)
-        {
-            _errorMessage = "ERROR: Subnetmask is invalid (1-31)!";
-            return false;
-        }
-
-        try
-        {
-            IPAddress.Parse(_network.IpNetworkId);
-        }
-        catch (Exception e)
-        {
-            _errorMessage = e.Message;
-            return false;
-        }
-
         _errorMessage = string.Empty;
         return true;
+    }
+
+    private void OnDropDownChange(object value)
+    {
+        _scan.NetworkId = (int)value;
     }
 }

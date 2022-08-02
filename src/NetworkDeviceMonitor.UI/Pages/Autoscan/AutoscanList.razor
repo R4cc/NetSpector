@@ -1,0 +1,88 @@
+﻿@page "/autoscans"
+@using NCrontab
+@inject IUnitOfWork _uow
+@inject NavigationManager nav
+
+<PageTitle>Network Scanner - Dashboard</PageTitle>
+
+<div class="container" >
+    <div class="row">
+        <div class="col" style="margin-left: 1em">
+            <h1>Autoscans</h1>
+            <div class="col-2">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateScan>New Autoscan</RadzenButton>
+            </div>
+            @if(_scans is not null && _scans.Count == 0)
+            {
+                <a>No autoscans set...</a>
+            }
+        </div>
+    </div>
+    <div class="row">
+@if(_scans is null)
+{
+    <a>Loading ...</a>
+}
+else
+{
+    <div class="container" style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em">
+    @foreach(var scan in _scans)
+    {
+        <div class="col" style="max-width: 25em; min-width: 25em">
+        <RadzenCard Style="width: 100%">
+            <div class="row" style="margin-bottom: 0.5em">
+                <h1>@scan?.Network.Name Autoscan</h1>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h4>Network: </h4>
+                    <h4>Next Scan: </h4>
+                    <h4>First Scanned: </h4>
+                    <h4>Last Scanned: </h4>
+                    <h4>Status: </h4>
+                </div>
+                <div class="col">
+                    <h4 style="font-weight: 400">@scan?.Network.Name</h4>
+                    <h4 style="font-weight: 400">@CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now)</h4>
+                    <h4 style="font-weight: 400">@scan.FirstExecuted</h4>
+                    <h4 style="font-weight: 400">@scan.LastExecuted</h4>
+                    <h4 style="font-weight: 400">@scan.IsActive</h4>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col">
+                    <RadzenButton Click="(() => LoadScan(scan.ScanId))" Style="width: 100%">Details</RadzenButton>
+                </div>
+            </div>
+        </RadzenCard>
+        </div>
+    }
+</div>
+}
+</div>
+</div>
+
+@code{
+    private List<Scan>? _scans;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadScans();
+    }
+
+    private async Task LoadScans()
+    {
+        _scans = await _uow.IScanRepository.GetAll();
+    }    
+
+    private async Task LoadScan(int scanId)
+    {
+        nav.NavigateTo($"/autoscan/{scanId}");
+    }
+    
+    private async Task CreateScan()
+    {
+        nav.NavigateTo($@"/autoscan/create");
+    }    
+}

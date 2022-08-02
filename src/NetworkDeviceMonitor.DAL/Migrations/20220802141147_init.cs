@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,8 +54,8 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                 {
                     ManufacturerId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Prefix = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Prefix = table.Column<string>(type: "TEXT", nullable: true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
                     LastUpdated = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -69,9 +69,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                 {
                     NetworkId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    IpNetworkId = table.Column<string>(type: "TEXT", nullable: false),
+                    IpNetworkId = table.Column<string>(type: "TEXT", nullable: true),
                     SubnetMask = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -192,8 +192,8 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Hostname = table.Column<string>(type: "TEXT", nullable: true),
-                    IpAddress = table.Column<string>(type: "TEXT", nullable: false),
-                    MacAddress = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    MacAddress = table.Column<string>(type: "TEXT", nullable: true),
                     LastSeen = table.Column<DateTime>(type: "TEXT", nullable: false),
                     FirstSeen = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ManufacturerId = table.Column<int>(type: "INTEGER", nullable: true),
@@ -217,6 +217,42 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Devices_Networks_NetworkId1",
                         column: x => x.NetworkId1,
+                        principalTable: "Networks",
+                        principalColumn: "NetworkId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Scans",
+                columns: table => new
+                {
+                    ScanId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NetworkId = table.Column<int>(type: "INTEGER", nullable: false),
+                    NetworkId1 = table.Column<int>(type: "INTEGER", nullable: true),
+                    CronSchedule = table.Column<string>(type: "TEXT", nullable: true),
+                    FirstExecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastExecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
+                    NetworkId2 = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Scans", x => x.ScanId);
+                    table.ForeignKey(
+                        name: "FK_Scans_Networks_NetworkId",
+                        column: x => x.NetworkId,
+                        principalTable: "Networks",
+                        principalColumn: "NetworkId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Scans_Networks_NetworkId1",
+                        column: x => x.NetworkId1,
+                        principalTable: "Networks",
+                        principalColumn: "NetworkId");
+                    table.ForeignKey(
+                        name: "FK_Scans_Networks_NetworkId2",
+                        column: x => x.NetworkId2,
                         principalTable: "Networks",
                         principalColumn: "NetworkId",
                         onDelete: ReferentialAction.Cascade);
@@ -278,6 +314,23 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                 name: "IX_Devices_NetworkId1",
                 table: "Devices",
                 column: "NetworkId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Scans_NetworkId",
+                table: "Scans",
+                column: "NetworkId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Scans_NetworkId1",
+                table: "Scans",
+                column: "NetworkId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Scans_NetworkId2",
+                table: "Scans",
+                column: "NetworkId2",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -299,6 +352,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Devices");
+
+            migrationBuilder.DropTable(
+                name: "Scans");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

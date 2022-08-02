@@ -21,9 +21,6 @@ else
             <div class="col-2">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateNetwork>New Network</RadzenButton>
             </div>
-            <div class="col-4" style="margin-left: -2em">
-                <RadzenButton Click=ReloadManufacturerData IsBusy=_processing BusyText="Loading Data ...">Load Manufacturer Data</RadzenButton>
-            </div>
         </div>
         <div class="row">
             <div class="col">
@@ -61,7 +58,6 @@ else
 
 @code {
     private List<Network> _networks;
-    private bool _processing;
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,14 +67,6 @@ else
     private async Task LoadNetworks()
     {
         _networks = await _uow.INetworkRepository.GetAll();
-    }
-
-    private async Task ReloadManufacturerData()
-    {
-        _processing = true;
-        Thread.Sleep(1);
-        await ManufacturerDataService.RefreshManufacturerData();
-        _processing = false;
     }
 
     private async Task LoadClients(int networkId)

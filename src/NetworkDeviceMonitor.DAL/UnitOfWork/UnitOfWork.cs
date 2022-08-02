@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
     private IDeviceRepository _deviceRepo;
     private INetworkRepository _networkRepo;
     private IManufacturerRepository _manufacturerRepo;
+    private IScanRepository _scanRepo;
     
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -19,6 +20,7 @@ public class UnitOfWork : IUnitOfWork
     public IDeviceRepository IDeviceRepository => _deviceRepo ?? new DeviceRepository(_context);
     public INetworkRepository INetworkRepository => _networkRepo ?? new NetworkRepository(_context);
     public IManufacturerRepository IManufacturerRepository => _manufacturerRepo ?? new ManufacturerRepository(_context);
+    public IScanRepository IScanRepository  => _scanRepo ?? new ScanRepository(_context);
 
     public async Task SaveChangesAsync()
     {
