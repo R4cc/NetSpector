@@ -5,9 +5,9 @@ namespace NetworkDeviceMonitor.Domain.Models;
 
 public class Scan
 {
-    [Key]
     public int ScanId { get; set; }
     public int NetworkId { get; set; }
+    [ForeignKey("NetworkId")]
     public Network Network { get; set; }
     public string CronSchedule { get; set; }
     public DateTime? FirstExecuted { get; set; }

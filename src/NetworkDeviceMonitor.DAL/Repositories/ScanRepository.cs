@@ -15,8 +15,7 @@ public class ScanRepository : IScanRepository
 
     public async Task<List<Scan>> GetAll()
     {
-        var x =  await _context.Scans.Include(s => s.Network).ToListAsync();
-        return x;
+        return await _context.Scans.Include(s => s.Network).ToListAsync();
     } 
     
     public async Task<List<Scan>> GetActive()

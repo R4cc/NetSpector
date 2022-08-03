@@ -11,8 +11,8 @@ using NetworkDeviceMonitor.DAL.Data;
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220802141147_init")]
-    partial class init
+    [Migration("20220803073122_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -332,17 +332,12 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     b.Property<int?>("NetworkId1")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("NetworkId2")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("ScanId");
 
                     b.HasIndex("NetworkId")
                         .IsUnique();
 
-                    b.HasIndex("NetworkId1");
-
-                    b.HasIndex("NetworkId2")
+                    b.HasIndex("NetworkId1")
                         .IsUnique();
 
                     b.ToTable("Scans");
@@ -423,19 +418,15 @@ namespace NetworkDeviceMonitor.DAL.Migrations
 
             modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Scan", b =>
                 {
-                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", null)
-                        .WithOne()
+                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", "Network")
+                        .WithOne("Scan")
                         .HasForeignKey("NetworkDeviceMonitor.Domain.Models.Scan", "NetworkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", "Network")
-                        .WithMany("Scans")
-                        .HasForeignKey("NetworkId1");
-
                     b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", null)
                         .WithOne()
-                        .HasForeignKey("NetworkDeviceMonitor.Domain.Models.Scan", "NetworkId2")
+                        .HasForeignKey("NetworkDeviceMonitor.Domain.Models.Scan", "NetworkId1")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Network");
@@ -445,7 +436,7 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                 {
                     b.Navigation("Devices");
 
-                    b.Navigation("Scans");
+                    b.Navigation("Scan");
                 });
 #pragma warning restore 612, 618
         }

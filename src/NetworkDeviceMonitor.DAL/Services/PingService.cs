@@ -56,19 +56,16 @@ public class PingService
             // IP based updating
             if (String.IsNullOrEmpty(macAddress))
             {
-                if (network.Devices.Any(d => d.IpAddress == ip.ToString() && d.MacAddress == macAddress))
-                {
-                    var existingDevice = network.Devices.FirstOrDefault(i => i.IpAddress == ip.ToString());
-                    if (existingDevice is null) return;
-                    
-                    existingDevice.LastSeen = scanDateTime;
-                    existingDevice.NetworkId = network.NetworkId;
-                    existingDevice.Hostname = hostname;
-                    existingDevice.ManufacturerId = manufacturer?.ManufacturerId;
-                    
-                    devicesToUpdate.Add(existingDevice);
-                    return;
-                }
+                var existingDevice = network.Devices.FirstOrDefault(i => i.IpAddress == ip.ToString());
+                if (existingDevice is null) return;
+                
+                existingDevice.LastSeen = scanDateTime;
+                existingDevice.NetworkId = network.NetworkId;
+                existingDevice.Hostname = hostname;
+                existingDevice.ManufacturerId = manufacturer?.ManufacturerId;
+                
+                devicesToUpdate.Add(existingDevice);
+                return;
             }
 
             // MAC Based updating
@@ -102,8 +99,8 @@ public class PingService
             devicesToCreate.Add(deviceToAdd);
         });
         
-        await _uow.IDeviceRepository.BulkUpdate(devicesToUpdate);
-        await _uow.IDeviceRepository.BulkCreate(devicesToCreate);
+        await _uow.IDeviceRepository.BulkUpdate(devicesToUpdate.DistinctBy(d => d.MacAddress).ToList());
+        await _uow.IDeviceRepository.BulkCreate(devicesToCreate.DistinctBy(d => d.MacAddress).ToList());
     }
 
     /// <summary>

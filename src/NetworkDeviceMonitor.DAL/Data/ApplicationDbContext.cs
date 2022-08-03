@@ -17,8 +17,8 @@ public class ApplicationDbContext : IdentityDbContext
         base.OnModelCreating(builder);
 
         var network = builder.Entity<Network>();
-        network.HasOne<Scan>().WithOne().HasForeignKey<Scan>(f => f.NetworkId);
-        
+        //network.HasOne<Scan>().WithOne().HasForeignKey<Scan>(f => f.NetworkId);
+
         network.HasMany<Device>().WithOne().OnDelete(DeleteBehavior.Cascade);
         network.HasOne<Scan>().WithOne().OnDelete(DeleteBehavior.Cascade);
         network.HasData(new Network
@@ -31,6 +31,9 @@ public class ApplicationDbContext : IdentityDbContext
         
         var device = builder.Entity<Device>();
         device.Property(x => x.ManufacturerId).IsRequired(false);
+
+        //var scan = builder.Entity<Scan>();
+        //scan.HasOne<Network>().WithMany().HasForeignKey(s => s.NetworkId);
     }
 
     public virtual DbSet<Network> Networks { get; set; }

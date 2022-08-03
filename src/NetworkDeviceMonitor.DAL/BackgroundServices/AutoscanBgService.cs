@@ -5,16 +5,14 @@ using NCrontab;
 using NetworkDeviceMonitor.DAL.Interfaces;
 using NetworkDeviceMonitor.DAL.Services;
 using NetworkDeviceMonitor.Domain.Models;
+using Radzen;
 
 namespace NetworkDeviceMonitor.DAL.BackgroundServices;
 
 public class AutoscanBgService : BackgroundService
 {
-    //private readonly IUnitOfWork _uow; 
-    //private readonly PingService _pingService; 
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<AutoscanBgService> _logger;
-    //private Timer? _timer = null;
+    //private readonly ILogger<AutoscanBgService> _logger;
     
     public AutoscanBgService(IServiceProvider serviceProvider)
     {
@@ -26,25 +24,30 @@ public class AutoscanBgService : BackgroundService
         //_logger.LogInformation("Timed Hosted Service AutoScanBgService running.");
 
         List<Scan> scanList;
-        List<Scan> scanningList = new ();
 
         using (IServiceScope scope = _serviceProvider.CreateScope())
         {
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             scanList = await uow.IScanRepository.GetActive();
         }
-
-        foreach (var scan in scanList.Where(s => !scanningList.Contains(s)))
+        
+        foreach (var scan in scanList)
         {
-            Task.Factory.StartNew(async () =>
-            {
-                scanningList.Add(scan);
-                Task.Delay(
-                    UntilNextExecution(CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now)),
-                    stoppingToken); // wait until next time
-                await DoWork(scan);
-            }, stoppingToken);
+            //WaitUntilExecution(scan, stoppingToken);
         }
+    }
+
+    private async Task WaitUntilExecution(Scan scan, CancellationToken stoppingToken)
+    {
+        Task.Factory.StartNew(async () =>
+        {
+            var time = UntilNextExecution(CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now));
+            Console.WriteLine($"STARTED TASK FOR {scan.Network.Name}, WAITING FOR {time}");
+            Task.Delay(time, stoppingToken); // wait until next time
+            await DoWork(scan);
+        }, stoppingToken).ContinueWith(task => { WaitUntilExecution(scan, stoppingToken); });
+        
+        Console.WriteLine($"FINISHED TASK FOR {scan.Network.Name}");
     }
 
     private async Task DoWork(Scan scan)
@@ -56,7 +59,6 @@ public class AutoscanBgService : BackgroundService
         }
         
         scan.FirstExecuted ??= DateTime.Now;
-        
         scan.LastExecuted = DateTime.Now;
     }
     

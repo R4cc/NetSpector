@@ -135,6 +135,8 @@
       <workItem from="1659438896594" duration="262000" />
       <workItem from="1659439468763" duration="6489000" />
       <workItem from="1659449462780" duration="171000" />
+      <workItem from="1659449805714" duration="41000" />
+      <workItem from="1659506566575" duration="12296000" />
     </task>
     <servers />
   </component>
@@ -145,23 +147,6 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/PingService.cs</url>
-          <line>104</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Services\PingService.cs" initialLine="104" containingFunctionPresentation="method 'ScanNetwork'">
-            <startOffsets>
-              <option value="3756" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3813" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="CronSchedule" />

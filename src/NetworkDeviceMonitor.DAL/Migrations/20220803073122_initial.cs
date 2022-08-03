@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -229,12 +229,11 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     ScanId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     NetworkId = table.Column<int>(type: "INTEGER", nullable: false),
-                    NetworkId1 = table.Column<int>(type: "INTEGER", nullable: true),
                     CronSchedule = table.Column<string>(type: "TEXT", nullable: true),
                     FirstExecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
                     LastExecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    NetworkId2 = table.Column<int>(type: "INTEGER", nullable: true)
+                    NetworkId1 = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -248,11 +247,6 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Scans_Networks_NetworkId1",
                         column: x => x.NetworkId1,
-                        principalTable: "Networks",
-                        principalColumn: "NetworkId");
-                    table.ForeignKey(
-                        name: "FK_Scans_Networks_NetworkId2",
-                        column: x => x.NetworkId2,
                         principalTable: "Networks",
                         principalColumn: "NetworkId",
                         onDelete: ReferentialAction.Cascade);
@@ -324,12 +318,7 @@ namespace NetworkDeviceMonitor.DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Scans_NetworkId1",
                 table: "Scans",
-                column: "NetworkId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Scans_NetworkId2",
-                table: "Scans",
-                column: "NetworkId2",
+                column: "NetworkId1",
                 unique: true);
         }
 

@@ -31,7 +31,7 @@ else
         <div class="col" style="max-width: 25em; min-width: 25em">
         <RadzenCard Style="width: 100%">
             <div class="row" style="margin-bottom: 0.5em">
-                <h1>@scan?.Network.Name Autoscan</h1>
+                <h1>@scan.NetworkId Autoscan</h1>
             </div>
             <div class="row">
                 <div class="col">
@@ -42,7 +42,7 @@ else
                     <h4>Status: </h4>
                 </div>
                 <div class="col">
-                    <h4 style="font-weight: 400">@scan?.Network.Name</h4>
+                    <h4 style="font-weight: 400">@scan.Network.Name</h4>
                     <h4 style="font-weight: 400">@CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now)</h4>
                     <h4 style="font-weight: 400">@scan.FirstExecuted</h4>
                     <h4 style="font-weight: 400">@scan.LastExecuted</h4>
