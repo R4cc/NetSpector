@@ -136,7 +136,7 @@
       <workItem from="1659439468763" duration="6489000" />
       <workItem from="1659449462780" duration="171000" />
       <workItem from="1659449805714" duration="41000" />
-      <workItem from="1659506566575" duration="12296000" />
+      <workItem from="1659506566575" duration="15253000" />
     </task>
     <servers />
   </component>
@@ -147,10 +147,52 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
+          <line>43</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="45" containingFunctionPresentation="lambda expression inside method 'ExecuteAsync'">
+            <startOffsets>
+              <option value="1654" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1667" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
+          <line>38</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="39" containingFunctionPresentation="lambda expression inside method 'ExecuteAsync'">
+            <startOffsets>
+              <option value="1298" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1402" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Repositories/NetworkRepository.cs</url>
+          <line>38</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Repositories\NetworkRepository.cs" initialLine="38" containingFunctionPresentation="method 'Create'">
+            <startOffsets>
+              <option value="1057" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1058" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="CronSchedule" />
-        <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Network" memberName="Devices" />
       </pinned-members>
     </pin-to-top-manager>
   </component>

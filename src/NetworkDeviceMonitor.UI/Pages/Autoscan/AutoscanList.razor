@@ -3,15 +3,17 @@
 @inject IUnitOfWork _uow
 @inject NavigationManager nav
 
-<PageTitle>Network Scanner - Dashboard</PageTitle>
+<PageTitle>NetSpector - Autoscans</PageTitle>
 
 <div class="container" >
-    <div class="row">
-        <div class="col" style="margin-left: 1em">
+    <div class="row" style="margin-bottom: 1em; margin-left: 0.2em">
+        <div class="col">
             <h1>Autoscans</h1>
-            <div class="col-2">
-                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateScan>New Autoscan</RadzenButton>
-            </div>
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateScan>New Autoscan</RadzenButton>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col">
             @if(_scans is not null && _scans.Count == 0)
             {
                 <a>No autoscans set...</a>
@@ -31,7 +33,7 @@ else
         <div class="col" style="max-width: 25em; min-width: 25em">
         <RadzenCard Style="width: 100%">
             <div class="row" style="margin-bottom: 0.5em">
-                <h1>@scan.NetworkId Autoscan</h1>
+                <h1>@scan.Network.Name</h1>
             </div>
             <div class="row">
                 <div class="col">
@@ -42,7 +44,7 @@ else
                     <h4>Status: </h4>
                 </div>
                 <div class="col">
-                    <h4 style="font-weight: 400">@scan.Network.Name</h4>
+                    <h4 style="font-weight: 400">@scan.Network.IpNetworkId</h4>
                     <h4 style="font-weight: 400">@CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now)</h4>
                     <h4 style="font-weight: 400">@scan.FirstExecuted</h4>
                     <h4 style="font-weight: 400">@scan.LastExecuted</h4>
