@@ -17,21 +17,24 @@ public class PingService
     {
         _uow = uow;
     }
-    public async Task ScanNetwork(Network network)
+    public async Task<Network> ScanNetwork(Network network)
     {
-        // get all IPs in specified network
-        List<IPAddress> ips = await GetIpHostRange(network.IpNetworkId, network.SubnetMask);
+        // IPs that are associated with a device
+        List<Device> knownDevices = network.Devices;
+        // get all IPs that are not associated with a device
+        List<IPAddress> unknownIps = (await GetIpHostRange(network.IpNetworkId, network.SubnetMask)).Where(x => knownDevices.All(d => d.IpAddress != x.ToString())).ToList();
 
+        List<Device> devicesToUpdate = new();
+        List<Device> devicesToCreate = new();
+        
         // mac vendors for creation of new Devices
         var manufacturers = await _uow.IManufacturerRepository.GetAll();
-        var devicesToUpdate = new List<Device>();
-        var devicesToCreate = new List<Device>();
         
         // shortened scanning datetime 
         DateTime scanDateTime = Convert.ToDateTime(DateTime.Now.ToString(("g")));
 
-        // loop through IPs and ping each one
-        Parallel.ForEach(ips, async ip =>
+        // loop through unknown IPs and ping each one
+        Parallel.ForEach(unknownIps, async ip =>
         {
             var reply = await PingDevice(ip);
 
@@ -40,67 +43,79 @@ public class PingService
                 return;
             }
 
-            // try to retrieve hostname
-            string hostname = await GetHostnameFromIp(ip);
-            Manufacturer manufacturer = null;
+            // retrieve hostname and mac
+            string hostnameFromIp = await GetHostnameFromIp(ip);
+            string macAddressFromIp = MacFormatService.GetRemoteMac(ip.ToString(), ':');
+            int? manufacturerId = null;
 
-            // MAC address retrieval 
-            var macAddress = MacResolverService.GetRemoteMac(ip.ToString(), ':');
-
-            if (!String.IsNullOrEmpty(macAddress))
+            // Remove device form list if it contains a device with the exact mac or hostname
+            switch (1)
             {
-                // get manufacturer by matching MAC address prefix
-                manufacturer = manufacturers.FirstOrDefault(x => x.Prefix == macAddress.Substring(0, 8));
+                case 1 when macAddressFromIp is "" && hostnameFromIp is "":
+                    break;                
+                case 1 when macAddressFromIp is "" && !String.IsNullOrEmpty(hostnameFromIp) && network.Devices.Any(x => x.Hostname == hostnameFromIp):
+                    network.Devices.Remove(network.Devices.FirstOrDefault(x => x.Hostname == hostnameFromIp));
+                    break;
+                case 1 when !String.IsNullOrEmpty(macAddressFromIp) && String.IsNullOrEmpty(hostnameFromIp) && network.Devices.Any(x => x.MacAddress == macAddressFromIp):
+                    network.Devices.Remove(network.Devices.FirstOrDefault(x => x.MacAddress == macAddressFromIp));
+                    break;
+            }
+
+            // set manufacturer if mac is set
+            if (manufacturers is not null && !String.IsNullOrEmpty(macAddressFromIp))
+            {
+                manufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == macAddressFromIp.Substring(0, 8))?.ManufacturerId;
             }
             
-            // IP based updating
-            if (String.IsNullOrEmpty(macAddress))
-            {
-                var existingDevice = network.Devices.FirstOrDefault(i => i.IpAddress == ip.ToString());
-                if (existingDevice is null) return;
-                
-                existingDevice.LastSeen = scanDateTime;
-                existingDevice.NetworkId = network.NetworkId;
-                existingDevice.Hostname = hostname;
-                existingDevice.ManufacturerId = manufacturer?.ManufacturerId;
-                
-                devicesToUpdate.Add(existingDevice);
-                return;
-            }
-
-            // MAC Based updating
-            if(network.Devices.Any(d => d.MacAddress == macAddress))
-            {
-                var existingDevice = network.Devices.FirstOrDefault(i => i.MacAddress == macAddress);
-                if (existingDevice is null) return;
-                
-                existingDevice.IpAddress = ip.ToString();
-                existingDevice.LastSeen = scanDateTime;
-                existingDevice.NetworkId = network.NetworkId;
-                existingDevice.Hostname = hostname;
-                existingDevice.ManufacturerId = manufacturer?.ManufacturerId;
-                
-                devicesToUpdate.Add(existingDevice);
-                return;
-            }
-
             // New device found; create it
-            var deviceToAdd = new Device
+            devicesToCreate.Add( new Device
             {
                 IpAddress = ip.ToString(),
                 NetworkId = network.NetworkId,
-                MacAddress = macAddress,
+                MacAddress = macAddressFromIp,
                 FirstSeen = scanDateTime,
                 LastSeen = scanDateTime,
-                Hostname = hostname,
-                ManufacturerId = manufacturer?.ManufacturerId
-            };
-
-            devicesToCreate.Add(deviceToAdd);
+                Hostname = hostnameFromIp,
+                ManufacturerId = manufacturerId
+            });
         });
         
-        await _uow.IDeviceRepository.BulkUpdate(devicesToUpdate.DistinctBy(d => d.MacAddress).ToList());
-        await _uow.IDeviceRepository.BulkCreate(devicesToCreate.DistinctBy(d => d.MacAddress).ToList());
+        Parallel.ForEach(knownDevices, async _device =>
+        {
+            var device = _device;
+            var ip = IPAddress.Parse(device.IpAddress);
+            var reply = await PingDevice(ip);
+            
+            // Set device to offline if not reachable
+            if (!reply.success)
+            {
+                device.IsOnline = false;
+                devicesToUpdate.Add(device);
+                return;
+            }
+            
+            // Get hostname and macaddress from the IP
+            string hostnameFromIp = await GetHostnameFromIp(ip);
+            string macAddressFromIp = MacFormatService.GetRemoteMac(ip.ToString(), ':');
+            
+            // Set manufacturer
+            if (!String.IsNullOrEmpty(device.MacAddress) && device.ManufacturerId is null)
+            {
+                device.ManufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == device.MacAddress.Substring(0, 8))?.ManufacturerId;
+            }
+            
+            device.LastSeen = scanDateTime;
+            device.IsOnline = true;
+            device.Hostname = hostnameFromIp;
+            device.MacAddress = macAddressFromIp;
+            
+            devicesToUpdate.Add(device);
+        });
+
+        network.Devices.AddRange(devicesToUpdate);
+        network.Devices.AddRange(devicesToCreate);
+        
+        return network;
     }
 
     /// <summary>
@@ -116,7 +131,7 @@ public class PingService
         }
         catch
         {
-            return "N/A";
+            return String.Empty;
         }
     }
 
@@ -171,7 +186,6 @@ public class PingService
     /// Pings a single device
     /// </summary>
     /// <param name="ip">IP Address of a device</param>
-    /// <param name="pingSender">Ping instance</param>
     /// <returns>Ping reply</returns>
     public async Task<IsAlivePayload> PingDevice(IPAddress ip)
     {

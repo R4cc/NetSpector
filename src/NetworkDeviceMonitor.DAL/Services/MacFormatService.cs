@@ -2,7 +2,7 @@
 
 namespace NetworkDeviceMonitor.DAL.Services;
 
-public static class MacResolverService
+public static class MacFormatService
 {
     /// <summary>
     /// Convert a string into Int32  
