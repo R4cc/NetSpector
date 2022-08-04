@@ -68,7 +68,9 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="show_chart" Style="vertical-align: middle"/>Average Ping:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count(x => x.ResponseTime > 0) != 0 ? Math.Round((decimal)responseTimes.Where(b => b.ResponseTime > 0).Average(b => b.ResponseTime), 2) : "0") ms</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count(x => x.ResponseTime > 0) != 0 ? 
+                                                             Math.Round((decimal)responseTimes.Where(b => b.ResponseTime > 0)
+                                                                 .Average(b => b.ResponseTime), 2) : "0") ms</h4>
                         </div>
                     </div>                    
                     
@@ -95,7 +97,9 @@ else
                             <h4 style="vertical-align: middle"><RadzenIcon Icon="highlight_off" Style="vertical-align: middle"/>Packet Loss:</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@(responseTimes.Count(r => r.ResponseTime < 0) != 0 ? System.Math.Round((decimal)responseTimes.Count(r => r.ResponseTime < 0) / responseTimes.Count()*100m, 2) : "0")%</h4>
+                            <h4 style="font-weight: 400">@(responseTimes.Count(r => r.ResponseTime < 0) != 0 ? 
+                                                             Math.Round((decimal)responseTimes.Count(r => r.ResponseTime < 0) 
+                                                                        / responseTimes.Count()*100m, 2) : "0")%</h4>
                         </div>
                     </div>
                 </RadzenCard>
@@ -106,8 +110,6 @@ else
 
 
 @code {
-// 
-    
     [Parameter]
     public int deviceId { get; set; }
 
