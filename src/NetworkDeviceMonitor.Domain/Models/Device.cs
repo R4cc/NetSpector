@@ -36,4 +36,5 @@ public class Device
     [ForeignKey("Network")]
     public int NetworkId { get; set; }
     public Network Network { get; set; }
+    public bool IsOnline { get; set; } = true;
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetworkDeviceMonitor.DAL.BackgroundServices;
 using NetworkDeviceMonitor.DAL.Data;
 using NetworkDeviceMonitor.DAL.Interfaces;
 using NetworkDeviceMonitor.DAL.Repositories;
@@ -33,6 +34,8 @@ builder.Services.AddTransient<DeviceRepository>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddHostedService<AutoscanBgService>();
 
 var app = builder.Build();
 

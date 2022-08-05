@@ -1,4 +1,5 @@
 ﻿@page "/network/{networkid:int}"
+@using System.Drawing
 
 @inject IUnitOfWork _uow
 @inject PingService PingService
@@ -23,11 +24,10 @@ else
             <table class="table">
                 <thead>
                 <tr>
-                    <td>Hostname</td>
                     <td>Name</td>
                     <td>IP Address</td>
-                    <td>MAC</td>
                     <td>Vendor</td>
+                    <td>Status</td>
                     <td>Last Seen</td>
                     <td>Controls</td>
                 </tr>
@@ -36,11 +36,10 @@ else
                 @foreach (var device in _devices.OrderBy(d => d.Int32IpAddress))
                 {
                     <tr>
-                        <td>@(device.Hostname ?? "N/A")</td>
-                        <td>@(device.Name ?? "-")</td>
+                        <td>@(String.IsNullOrEmpty(device.Name) ? (String.IsNullOrEmpty(device.Hostname) ? "N/A" : device.Hostname) : device.Name)</td>
                         <td>@device.IpAddress</td>
-                        <td>@(!String.IsNullOrEmpty(device.MacAddress) ? device.MacAddress : "N/A")</td>
                         <td>@(device.Manufacturer != null ? device.Manufacturer.Name : "N/A")</td>
+                        <td><RadzenBadge BadgeStyle="@(device.IsOnline ? BadgeStyle.Success : BadgeStyle.Danger)" Text="@(device.IsOnline ? "ONLINE" : "OFFLINE")"/></td>
                         <td>@device.LastSeen.ToString("g")</td>
                         <td>
                             <RadzenButton Click=@(() => PingDevice(device.DeviceId)) Icon="contactless"/>
@@ -59,7 +58,6 @@ else
     public int networkId { get; set; }
     private bool _processing;
     private List<Device> _devices;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,11 +82,14 @@ else
     private async Task ScanNetwork()
     {
         _processing = true;
-        _devices = new List<Device>();
+
         // this task delay is needed for the processing status to work.. dont ask me why
         await Task.Delay(1);
+        
         var network = await _uow.INetworkRepository.GetNetworkFromId(networkId);
-        await PingService.ScanNetwork(network);
+        await _uow.INetworkRepository.Update(await PingService.ScanNetwork(network));
+        await _uow.SaveChangesAsync();
+        
         await LoadDevices();
         _processing = false;
     }

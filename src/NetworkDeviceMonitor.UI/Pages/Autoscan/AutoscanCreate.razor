@@ -1,0 +1,131 @@
+﻿@page "/autoscan/create"
+@using System.Net
+@using NCrontab
+
+@inject IUnitOfWork _uow
+@inject NavigationManager Nav
+
+
+@if (_scan is null || _networks is null)
+{
+    <a>Loading...</a>    
+}
+else
+{
+    
+    <div class="container" style="max-width: 40em">
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
+                <h3>Create an Autoscan</h3>
+                <label style="color: red">Application must be restarted in order for new autoscans to work!</label>
+            </div>
+        </div>
+        @if (_errorMessage is not null)
+        {
+            <div class="row">
+                <div class="col">
+                    <a style="color: #ff0707">@_errorMessage</a>    
+                </div>
+            </div>
+        }
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
+                <h4>Network</h4>
+                <RadzenDropDown AllowClear="false" TValue="int"
+                                Style="width: 100%"
+                                TextProperty="Name"
+                                Data=@(_networks)
+                                Value="_networks[0]"
+                                ValueProperty="NetworkId"
+                                Change="@(args => OnDropDownChange(args))"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
+                <h4>Schedule</h4>
+                <RadzenTextBox Style="width: 100%" @bind-Value="_scan.CronSchedule" Placeholder="50 * * * *"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
+                <h4>Activate Autoscan</h4>
+                <RadzenCheckBox @bind-Value="_scan.IsActive"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="width: 100%">
+                <RadzenButton Style="float: right;" ButtonStyle="ButtonStyle.Success" Click=ValidSubmit>Save</RadzenButton>
+                <RadzenButton Style="float: right; margin-right: 1em;" ButtonStyle="ButtonStyle.Danger" Click=CancelSubmit>Cancel</RadzenButton>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    private Scan _scan = new();
+    private List<Network> _networks;
+    private string _errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNetworks();
+    }
+
+    private async Task ValidSubmit()
+    {
+        if (!await IsValid())
+        {
+            // input is invalid
+            return;
+        }
+        
+        await _uow.IScanRepository.Create(_scan);
+        await _uow.SaveChangesAsync();
+        Nav.NavigateTo("/autoscans");
+    }
+
+    private async Task LoadNetworks()
+    {
+        _networks = await _uow.INetworkRepository.GetAll();
+    }
+    
+    private async Task CancelSubmit()
+    {
+        Nav.NavigateTo("/autoscans");
+    }
+
+    private async Task<bool> IsValid()
+    {
+        // Check if network is filled out
+        if (_scan.NetworkId == -1)
+        {
+            _errorMessage = "Network cannot be null!";
+            return false;
+        }
+        
+        // Check if cron is filled out
+        if (String.IsNullOrEmpty(_scan.CronSchedule))
+        {
+            _errorMessage = "Schedule cannot be null!";
+            return false;
+        }
+
+        // Check if cron format is valid
+        try
+        {
+            CrontabSchedule.Parse(_scan.CronSchedule);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Schedule format is invalid!";
+            return false;
+        }
+        
+        _errorMessage = string.Empty;
+        return true;
+    }
+
+    private void OnDropDownChange(object value)
+    {
+        _scan.NetworkId = (int)value;
+    }
+}
