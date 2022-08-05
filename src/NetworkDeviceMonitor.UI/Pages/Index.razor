@@ -89,7 +89,7 @@ else
                         <h4>Next Scan: </h4>
                     </div>
                     <div class="col">
-                        <h4 style="font-weight: 400">@CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now).ToString("g")</h4>
+                        <h4 style="font-weight: 400">@(scan.NextExecute.Date == DateTime.Today ? "Today " + scan.NextExecute.ToString("H:mm") : scan.NextExecute.ToString("g"))</h4>
                     </div>
                 </div>
                 <div class="row">
@@ -97,7 +97,7 @@ else
                         <h4>Last Scanned: </h4>
                     </div>
                     <div class="col">
-                        <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : (Convert.ToDateTime(scan.LastExecuted)).ToString("g"))</h4>
+                        <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : (scan.LastExecuted.Value.Date == System.DateTime.Today ? "Today " + System.Convert.ToDateTime(scan.LastExecuted).ToString("H:mm") : (Convert.ToDateTime(scan.LastExecuted)).ToString("g")))</h4>
                     </div>
                 </div>
                 <div class="row">

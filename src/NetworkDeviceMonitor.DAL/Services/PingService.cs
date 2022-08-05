@@ -39,9 +39,7 @@ public class PingService
             var reply = await PingDevice(ip);
 
             if (!reply.success)
-            {
-                return;
-            }
+                return; 
 
             // retrieve hostname and mac
             string hostnameFromIp = await GetHostnameFromIp(ip);
