@@ -35,8 +35,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
-builder.Services.AddHostedService<AutoscanBgService>();
-//builder.Services.AddHostedService<BackgroundServiceStarter<AutoscanBgService>>();
+//builder.Services.AddHostedService<AutoscanBgService>();
 
 var app = builder.Build();
 
