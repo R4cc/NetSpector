@@ -54,7 +54,7 @@
                                     <h4>Last Scanned: </h4>
                                 </div>
                                 <div class="col">
-                                    <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : scan.LastExecuted)</h4>
+                                    <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : (Convert.ToDateTime(scan.LastExecuted)).ToString("g"))</h4>
                                 </div>
                             </div>
                             <div class="row">

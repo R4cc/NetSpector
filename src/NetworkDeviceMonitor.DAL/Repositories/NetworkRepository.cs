@@ -27,7 +27,7 @@ public class NetworkRepository : INetworkRepository
     
     public async Task Update(Network network)
     {
-        await _context.Networks.SingleUpdateAsync(network);
+        _context.Networks.Update(network);
     }
     
     public async Task Remove(Network network)

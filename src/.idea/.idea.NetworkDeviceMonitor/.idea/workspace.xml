@@ -16,7 +16,9 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5939cc1db917894f431a56f3c68e6bef1ade5c56e1cc94de5f14d5305d7e2af3/InvalidOperationException.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/78ecbb2c8805cce0e72d95dbb958a5fceb51f63079fecdc2d51b6b4e21e23/Ping.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/af9d35ca731afb5287958b515b6153ba85e3d21a1f0b0d5531e5c5278fed722/BackgroundService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b62f5ebc7d3a894c57871886c68c343e17f3c3274ce65a8154d53b45ca7c7a/Ping.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/ManufacturerDataService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/PingService.cs" root0="FORCE_HIGHLIGHTING" />
@@ -37,30 +39,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Project.color": "580546",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "XThreadsFramesViewSplitterKey": "0.5005688",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "HotReloadSettingsPage",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Project.color&quot;: &quot;580546&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.46459228&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;HotReloadSettingsPage&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JSUnicodeRegexp"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JSUnicodeRegexp&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="this." />
@@ -144,7 +146,8 @@
       <workItem from="1659596960809" duration="1183000" />
       <workItem from="1659598183486" duration="38000" />
       <workItem from="1659598312259" duration="15157000" />
-      <workItem from="1659684596705" duration="3064000" />
+      <workItem from="1659684596705" duration="11656000" />
+      <workItem from="1659696936000" duration="1523000" />
     </task>
     <servers />
   </component>
@@ -158,30 +161,43 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
-          <line>43</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="45" containingFunctionPresentation="lambda expression inside method 'ExecuteAsync'">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Repositories/NetworkRepository.cs</url>
+          <line>29</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Repositories\NetworkRepository.cs" initialLine="29" containingFunctionPresentation="method 'Update'">
             <startOffsets>
-              <option value="1654" />
+              <option value="834" />
             </startOffsets>
             <endOffsets>
-              <option value="1667" />
+              <option value="868" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="15" />
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
-          <line>38</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="39" containingFunctionPresentation="lambda expression inside method 'ExecuteAsync'">
+          <line>71</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="71" containingFunctionPresentation="method 'DoWork'">
             <startOffsets>
-              <option value="1298" />
+              <option value="2907" />
             </startOffsets>
             <endOffsets>
-              <option value="1402" />
+              <option value="3006" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="18" />
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
+          <line>67</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="67" containingFunctionPresentation="method 'DoWork'">
+            <startOffsets>
+              <option value="2615" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2680" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

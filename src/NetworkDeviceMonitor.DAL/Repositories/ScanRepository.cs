@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NetworkDeviceMonitor.DAL.Data;
 using NetworkDeviceMonitor.DAL.Interfaces;
 using NetworkDeviceMonitor.Domain.Models;
@@ -16,11 +17,18 @@ public class ScanRepository : IScanRepository
     public async Task<List<Scan>> GetAll()
     {
         return await _context.Scans.Include(s => s.Network).ToListAsync();
+    }     
+    
+    public async Task<Scan> GetByID(int scanId)
+    {
+        var scan = await _context.Scans.FirstOrDefaultAsync(s => s.ScanId == scanId);
+        //_context.Entry(scan).State = EntityState.Detached;
+        return scan;
     } 
     
-    public async Task<List<Scan>> GetActive()
+    public async Task<List<Scan>> GetAllActive()
     {
-        return await _context.Scans.Include(s => s.Network).Where(s => s.IsActive).ToListAsync();
+        return await _context.Scans.Include(s => s.Network).ThenInclude(n => n.Devices).Where(s => s.IsActive).ToListAsync();
     } 
     
     public async Task Create(Scan scan)
