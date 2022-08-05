@@ -28,7 +28,7 @@ else
                                     <RadzenMarkers MarkerType="MarkerType.Circle"/>
                                     <RadzenSeriesDataLabels/>
                                 </RadzenLineSeries>
-                                <RadzenCategoryAxis Padding="20" Min="1" Max="15" Step="1"/>
+                                <RadzenCategoryAxis Padding="20" Min="1" Max="8" Step="1"/>
                                 <RadzenValueAxis Formatter="FormatAsMS" 
                                                  Min="0" 
                                                  Step="@(responseTimes.Count != 0 && responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime > 20 ? responseTimes.OrderByDescending(b => b.ResponseTime).ToList()[0].ResponseTime / 10 : 1)" 
@@ -48,6 +48,7 @@ else
                         <h4>Hostname: </h4>
                         <h4>IP Address: </h4>
                         <h4>MAC Address: </h4>
+                        <h4>First Seen: </h4>
                         <h4>Last Seen: </h4>
                     </div>
                     <div class="col">
@@ -55,6 +56,7 @@ else
                         <h4 style="font-weight: 400">@_device.Hostname</h4>
                         <h4 style="font-weight: 400">@_device.IpAddress</h4>
                         <h4 style="font-weight: 400">@(String.IsNullOrEmpty(_device.MacAddress) ? "N/A" : _device.MacAddress)</h4>
+                        <h4 style="font-weight: 400">@_device.FirstSeen.ToString("g")</h4>
                         <h4 style="font-weight: 400">@_device.LastSeen.ToString("g")</h4>
                     </div>
                 </div> 
@@ -143,7 +145,7 @@ else
     {
         responseTimes = new();
         _processing = true;
-        for (int i = 1; i <= 15; i++)
+        for (int i = 1; i <= 8; i++)
         {
             var reply = await Ping.PingDevice(IPAddress.Parse(_device.IpAddress));
 
