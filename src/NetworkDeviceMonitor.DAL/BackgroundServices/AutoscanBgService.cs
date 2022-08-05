@@ -27,7 +27,7 @@ public class AutoscanBgService : BackgroundService
         using (IServiceScope scope = _serviceProvider.CreateScope())
         {
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            scanList = await uow.IScanRepository.GetAllActive();
+            scanList = await uow.IScanRepository.GetAllActiveDetached();
         }
 
         foreach (var scan in scanList)
@@ -43,7 +43,7 @@ public class AutoscanBgService : BackgroundService
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
                         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                        currentScan = await uow.IScanRepository.GetByID(scan.ScanId);
+                        currentScan = await uow.IScanRepository.GetDetachedByID(scan.ScanId);
                     }
                     
                     if (currentScan is not null && currentScan.IsActive)
@@ -68,8 +68,8 @@ public class AutoscanBgService : BackgroundService
         var updatedNetwork = await pingService.ScanNetwork(scan.Network);
         await Task.Delay(5000);
         // make sure network hasn't been deleted while scanning
-        var confirmationNetwork = await context.Networks.FirstOrDefaultAsync(n => n.NetworkId == scan.Network.NetworkId);
-        if (confirmationNetwork is not null || confirmationNetwork.IpNetworkId != scan.Network.IpNetworkId)
+        var confirmationNetwork = context.Networks.Any(n => n.NetworkId == scan.NetworkId);
+        if (confirmationNetwork)
         {
             context.Networks.Update(updatedNetwork);
             await context.SaveChangesAsync();

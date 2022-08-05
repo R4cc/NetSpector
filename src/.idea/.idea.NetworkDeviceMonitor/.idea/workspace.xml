@@ -147,7 +147,7 @@
       <workItem from="1659598183486" duration="38000" />
       <workItem from="1659598312259" duration="15157000" />
       <workItem from="1659684596705" duration="11656000" />
-      <workItem from="1659696936000" duration="2106000" />
+      <workItem from="1659696936000" duration="5390000" />
     </task>
     <servers />
   </component>
@@ -174,30 +174,45 @@
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
-          <line>71</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="71" containingFunctionPresentation="method 'DoWork'">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.UI/Pages/Settings/Settings.razor</url>
+          <line>35</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.UI\Pages\Settings\Settings.razor" initialLine="35" isMultiMethodBreakpoint="true">
+            <option name="multiMethodBreakpoint" value="true" />
             <startOffsets>
-              <option value="2907" />
+              <option value="-1" />
             </startOffsets>
             <endOffsets>
-              <option value="3006" />
+              <option value="-1" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="32" />
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.UI/Pages/Settings/Settings.razor</url>
+          <line>28</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.UI\Pages\Settings\Settings.razor" initialLine="28" isMultiMethodBreakpoint="true">
+            <option name="multiMethodBreakpoint" value="true" />
+            <startOffsets>
+              <option value="-1" />
+            </startOffsets>
+            <endOffsets>
+              <option value="-1" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
-          <line>67</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="67" containingFunctionPresentation="method 'DoWork'">
+          <line>32</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="32" containingFunctionPresentation="method 'ExecuteAsync'">
             <startOffsets>
-              <option value="2615" />
+              <option value="1115" />
             </startOffsets>
             <endOffsets>
-              <option value="2680" />
+              <option value="1145" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="33" />
+          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

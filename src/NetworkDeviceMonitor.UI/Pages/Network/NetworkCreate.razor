@@ -3,6 +3,7 @@
 
 @inject IUnitOfWork _uow
 @inject NavigationManager Nav
+@inject NotificationService NotificationService
 
 
 @if (_network is null)
@@ -67,6 +68,7 @@ else
         await _uow.INetworkRepository.Create(_network);
         await _uow.SaveChangesAsync();
         Nav.NavigateTo("/networks");
+        NotificationService.Notify(new NotificationMessage() {Summary = "Network created", Detail = $"{_network.Name} has been created successfully!", Duration = 4000, Severity = NotificationSeverity.Success});
     }
     
     private async Task CancelSubmit()

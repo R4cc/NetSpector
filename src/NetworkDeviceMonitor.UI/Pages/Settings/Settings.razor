@@ -4,11 +4,11 @@
 @inject ManufacturerDataService ManufacturerDataService
 @inject NavigationManager Nav
 @inject DialogService DialogService
-
+@inject NotificationService NotificationService
 
 <div class="container">
     <div class="row">
-        <h2>Settings</h2>
+        <h1>Settings</h1>
     </div>
     <div class="row">
         <div class="col">
@@ -33,5 +33,6 @@
         Thread.Sleep(1);
         await ManufacturerDataService.RefreshManufacturerData();
         _processing = false;
+        NotificationService.Notify(new NotificationMessage() {Summary = "Data updated", Detail = "Manufacturer data has been updated successfully!", Duration = 4000, Severity = NotificationSeverity.Success});
     }
 }

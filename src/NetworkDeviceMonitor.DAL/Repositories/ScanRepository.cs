@@ -19,16 +19,21 @@ public class ScanRepository : IScanRepository
         return await _context.Scans.Include(s => s.Network).ToListAsync();
     }     
     
-    public async Task<Scan> GetByID(int scanId)
+    public async Task<Scan> GetDetachedByID(int scanId)
     {
         var scan = await _context.Scans.FirstOrDefaultAsync(s => s.ScanId == scanId);
-        //_context.Entry(scan).State = EntityState.Detached;
+        _context.Entry(scan).State = EntityState.Detached;
         return scan;
     } 
     
-    public async Task<List<Scan>> GetAllActive()
+    public async Task<List<Scan>> GetAllActiveDetached()
     {
-        return await _context.Scans.Include(s => s.Network).ThenInclude(n => n.Devices).Where(s => s.IsActive).ToListAsync();
+        var scans = await _context.Scans.Include(s => s.Network).ThenInclude(n => n.Devices).Where(s => s.IsActive).ToListAsync();
+        foreach (var scan in scans)
+        {
+            _context.Entry(scan).State = EntityState.Detached;
+        }
+        return scans;
     } 
     
     public async Task Create(Scan scan)

@@ -4,8 +4,7 @@
 @inject ManufacturerDataService ManufacturerDataService
 @inject NavigationManager Nav
 @inject DialogService DialogService
-
-
+@inject NotificationService NotificationService
 
 @if (_networks is null)
 {
@@ -15,11 +14,11 @@ else
 {
     <div class="container">
         <div class="row">
-            <h2>Networks</h2>
+            <h1>Networks</h1>
         </div>
         <div class="row" style="margin-bottom: 1em">
             <div class="col-2">
-                <RadzenButton ButtonStyle="ButtonStyle.Success" Click=CreateNetwork>New Network</RadzenButton>
+                <RadzenButton Click=CreateNetwork>New Network</RadzenButton>
             </div>
         </div>
         <div class="row">
@@ -45,7 +44,6 @@ else
                             <td>
                                 <RadzenButton Click=@(() => LoadClients(network.NetworkId)) Icon="devices" />
                                 <RadzenButton Click=@(() => RemoveNetwork(network)) ButtonStyle="ButtonStyle.Danger" Icon="delete" />
-
                             </td>
                         </tr>
                     }
@@ -91,6 +89,7 @@ else
 
         await _uow.INetworkRepository.Remove(network);
         await _uow.SaveChangesAsync();
+        NotificationService.Notify(new NotificationMessage() {Summary = "Network deleted", Detail = $"{network.Name} has been deleted successfully!", Duration = 4000, Severity = NotificationSeverity.Success});
         await LoadNetworks();
     }
 }

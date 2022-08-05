@@ -1,28 +1,30 @@
 ﻿@page "/"
+@using NCrontab
 @inject IUnitOfWork _uow
 @inject NavigationManager nav
 
 <PageTitle>Network Scanner - Dashboard</PageTitle>
 
-<div class="container" >
-    <div class="row">
-        <div class="col" style="margin-left: 1em">
-            <h1>Dashboard</h1>
-            <h2>Networks</h2>
-            @if(_networks is not null && _networks.Count == 0)
-            {
-                <a>No networks set...</a>
-            }
-        </div>
-    </div>
-    <div class="row">
+
 @if(_networks is null)
 {
-    <a>Loading ...</a>
+        <a>Loading ...</a>
 }
 else
 {
-    <div class="container" style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em">
+    <div class="container" >
+        <div class="row" style="margin-left: 0em">
+            <div class="col">
+                <h1>Dashboard</h1>
+                <h2>Networks</h2>
+                @if(_networks.Count == 0)
+                {
+                    <a>No networks setup...</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container" style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em; margin-bottom: 2em;">
     @foreach(var network in _networks)
     {
         <div class="col" style="max-width: 25em; min-width: 25em">
@@ -51,20 +53,85 @@ else
     }
 </div>
 }
+
+@if(_autoscans is null)
+{
+    <a>Loading ...</a>
+}
+else
+{
+<div class="container" >
+    <div class="row" style="margin-left: 0em">
+        <div class="col">
+            <h2>Autoscans</h2>
+            @if(_autoscans.Count == 0)
+            {
+                <a>No autoscans setup...</a>
+            }
+        </div>
+    </div>
+</div>    
+<div class="container" style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em; ">
+    @foreach(var scan in _autoscans)
+    {
+        <div class="col" style="max-width: 25em; min-width: 25em">
+          <RadzenCard Style="width: 100%">
+                <div class="row" style="margin-bottom: 0.5em;">
+                    <div class="col-10">
+                        <h1>@scan.Network.IpNetworkId</h1>
+                    </div>
+                    <div class="col-2">
+                        <RadzenSwitch Style="margin-left: -2em; vertical-align: middle" @bind-Value="scan.IsActive"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Next Scan: </h4>
+                    </div>
+                    <div class="col">
+                        <h4 style="font-weight: 400">@CrontabSchedule.Parse(scan.CronSchedule).GetNextOccurrence(DateTime.Now).ToString("g")</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Last Scanned: </h4>
+                    </div>
+                    <div class="col">
+                        <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : (Convert.ToDateTime(scan.LastExecuted)).ToString("g"))</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Status: </h4>
+                    </div>
+                    <div class="col">
+                        <h4 style="font-weight: 400"><RadzenBadge BadgeStyle="@(scan.IsActive ? BadgeStyle.Primary : BadgeStyle.Danger)" Text="@(scan.IsActive ? "ACTIVE" : "INACTIVE")"/></h4>
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+    }
 </div>
-</div>
+}
 
 @code{
-    private List<NetworkDeviceMonitor.Domain.Models.Network>? _networks;
+    private List<Domain.Models.Network> _networks;
+    private List<Scan> _autoscans;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadNetworks();
+        await LoadScans();
     }
 
     private async Task LoadNetworks()
     {
         _networks = await _uow.INetworkRepository.GetAll();
+    }        
+    
+    private async Task LoadScans()
+    {
+        _autoscans = await _uow.IScanRepository.GetAll();
     }    
 
     private async Task LoadNetwork(int networkId)
