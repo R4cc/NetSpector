@@ -15,6 +15,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1af51483c9bf18871cce649b9f966dd7be686536f998c33bba3c5fc4adea4a0/Task.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/27b91272f348469b8fccc471c1ccd767f57a64f55a44975790bfae805b4ebb/Future.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5939cc1db917894f431a56f3c68e6bef1ade5c56e1cc94de5f14d5305d7e2af3/InvalidOperationException.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/78ecbb2c8805cce0e72d95dbb958a5fceb51f63079fecdc2d51b6b4e21e23/Ping.cs" root0="SKIP_HIGHLIGHTING" />
@@ -147,7 +149,7 @@
       <workItem from="1659598183486" duration="38000" />
       <workItem from="1659598312259" duration="15157000" />
       <workItem from="1659684596705" duration="11656000" />
-      <workItem from="1659696936000" duration="5390000" />
+      <workItem from="1659696936000" duration="8634000" />
     </task>
     <servers />
   </component>
@@ -201,24 +203,11 @@
           </properties>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/BackgroundServices/AutoscanBgService.cs</url>
-          <line>32</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\BackgroundServices\AutoscanBgService.cs" initialLine="32" containingFunctionPresentation="method 'ExecuteAsync'">
-            <startOffsets>
-              <option value="1115" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1145" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
-        <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="CronSchedule" />
+        <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="NetworkId" />
       </pinned-members>
     </pin-to-top-manager>
   </component>
