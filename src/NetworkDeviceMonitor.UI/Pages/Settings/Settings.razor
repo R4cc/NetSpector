@@ -8,20 +8,20 @@
 
 <div class="container">
     <div class="row">
-        <h1>Settings</h1>
+        <div class="col">
+            <h1 style="font-size: 4em">Settings</h1>
+        </div>
     </div>
     <div class="row">
         <div class="col">
-            <h4>Manufacturer Data</h4>
-            <RadzenButton Click=ReloadManufacturerData IsBusy=_processing BusyText="Loading Data ...">Reload Manufacturer Data</RadzenButton>
+            <h1>Manufacturer Data</h1>
+                <RadzenButton Click=ReloadManufacturerData IsBusy=_processing BusyText="Loading Data ...">Reload Manufacturer Data</RadzenButton>
         </div>
     </div>
 </div>
 
 @code {
     private bool _processing;
-
-
     private async Task ReloadManufacturerData()
     {
         bool? confirmDelete = (bool)await DialogService.Confirm("Are you sure you want to reload manufacturer data? This can take up to 2 minutes!", $"Reload manufacturer data?", new ConfirmOptions() { OkButtonText = "Confirm", CancelButtonText = "Cancel" });

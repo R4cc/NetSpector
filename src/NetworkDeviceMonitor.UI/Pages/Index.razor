@@ -15,8 +15,8 @@ else
     <div class="container" >
         <div class="row" style="margin-left: 0em">
             <div class="col">
-                <h1>Dashboard</h1>
-                <h2>Networks</h2>
+                <h1 style="font-size: 4em">Dashboard</h1>
+                <h1>Networks</h1>
                 @if(_networks.Count == 0)
                 {
                     <a>No networks setup...</a>
@@ -25,33 +25,34 @@ else
         </div>
     </div>
     <div class="container" style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.2em; row-gap: 2.5em; margin-bottom: 2em;">
-    @foreach(var network in _networks)
-    {
-        <div class="col" style="max-width: 25em; min-width: 25em">
-        <RadzenCard Style="width: 100%">
-            <div class="row" style="margin-bottom: 0.5em">
-                <h1>@network.Name</h1>
+        @foreach(var network in _networks)
+        {
+            <div class="col" style="max-width: 25em; min-width: 25em">
+                <RadzenCard Style="width: 100%">
+                    <div class="row" style="margin-bottom: 0.5em">
+                        <h2>@network.Name</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>Network ID: </h4>
+                            <h4>Device Count: </h4>
+                        </div>
+                        <div class="col">
+                            <h4 style="font-weight: 400">@network.IpNetworkId / @network.SubnetMask</h4>
+                            <h4 style="font-weight: 400">@network.Devices.Count</h4>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col">
+                            <RadzenButton Click="(() => LoadNetwork(network.NetworkId))" Style="width: 100%">Details</RadzenButton>
+                        </div>
+                    </div>
+                </RadzenCard>
             </div>
-            <div class="row">
-                <div class="col">
-                    <h4>Network ID: </h4>
-                    <h4>Device Count: </h4>
-                </div>
-                <div class="col">
-                    <h4 style="font-weight: 400">@network.IpNetworkId / @network.SubnetMask</h4>
-                    <h4 style="font-weight: 400">@network.Devices.Count</h4>
-                </div>
-            </div>
-            <hr/>
-            <div class="row">
-                <div class="col">
-                    <RadzenButton Click="(() => LoadNetwork(network.NetworkId))" Style="width: 100%">Details</RadzenButton>
-                </div>
-            </div>
-        </RadzenCard>
-        </div>
-    }
-</div>
+        }
+    </div>
+
 }
 
 @if(_autoscans is null)
@@ -60,11 +61,11 @@ else
 }
 else
 {
-<div class="container" >
+    <div class="container" >
     <div class="row" style="margin-left: 0em">
         <div class="col">
-            <h2>Autoscans</h2>
-            @if(_autoscans.Count == 0)
+            <h1>Autoscans</h1>
+            @if (_autoscans.Count == 0)
             {
                 <a>No autoscans setup...</a>
             }
@@ -78,7 +79,7 @@ else
           <RadzenCard Style="width: 100%">
                 <div class="row" style="margin-bottom: 0.5em;">
                     <div class="col-10">
-                        <h1>@scan.Network.IpNetworkId</h1>
+                        <h2>@scan.Network.IpNetworkId</h2>
                     </div>
                     <div class="col-2">
                         <RadzenSwitch Style="margin-left: -2em; vertical-align: middle" @bind-Value="scan.IsActive"/>
