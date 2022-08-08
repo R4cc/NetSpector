@@ -42,9 +42,10 @@ else
         <div class="row" style="margin-bottom: 1em;">
             <div class="col">
                 <h4>Subnetmask</h4>
-                <RadzenNumeric Style="width: 100%" @bind-Value="_network.SubnetMask" Max=32 Min=1 Placeholder=24/>
+                <RadzenNumeric Style="width: 100%" @bind-Value="_network.SubnetMask" Max=32 Min=1 Placeholder=24 />
             </div>
         </div>
+
         <div class="row" >
             <div class="col" style="width: 100%">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Click=ValidSubmit Style="float: right;">Save</RadzenButton>
@@ -56,6 +57,7 @@ else
 @code {
     private Network _network = new();
     private string _errorMessage = string.Empty;
+    private Exclusion _newExclusion = new();
     
     private async Task ValidSubmit()
     {
@@ -74,6 +76,19 @@ else
     private async Task CancelSubmit()
     {
         Nav.NavigateTo("/networks");
+    }    
+    
+    private async Task RemoveExclusion(Exclusion exclusion)
+    {
+        _network.Exclusions.Remove(exclusion);
+        StateHasChanged();
+    }    
+    
+    private async Task AddExclusion()
+    {
+        _network.Exclusions.Add(_newExclusion);
+        _newExclusion = new();
+        StateHasChanged();
     }
 
     private async Task<bool> IsValid()

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 
 namespace NetworkDeviceMonitor.Domain.Models;
 
@@ -12,4 +13,5 @@ public class Network
     //[ForeignKey("ScanId")]
     public Scan Scan { get; set; }
     public List<Device> Devices { get; set; } = new();
+    public List<Exclusion> Exclusions { get; set; } = new();
 }
