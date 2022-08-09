@@ -23,7 +23,11 @@ public class PingService
         List<Device> knownDevices = network.Devices;
         // get all IPs that are not associated with a device
         List<IPAddress> unknownIps = (await GetIpHostRange(network.IpNetworkId, network.SubnetMask)).Where(x => knownDevices.All(d => d.IpAddress != x.ToString())).ToList();
+        List<IPAddress> excludedIps = await GetExcludedIps(network);
 
+        knownDevices.RemoveAll(x => excludedIps.Contains(IPAddress.Parse( x.IpAddress)));
+        unknownIps.RemoveAll(x => excludedIps.Contains(x));
+        
         List<Device> devicesToUpdate = new();
         List<Device> devicesToCreate = new();
         
@@ -192,5 +196,17 @@ public class PingService
         IsAlivePayload payload = isAlive.check(ip, 0, IsAlive.NETWORK_PROTOCOL.ICMP);
 
         return payload;
+    }
+
+    private async Task<List<IPAddress>> GetExcludedIps(Network network)
+    {
+        List<IPAddress> ips = new();
+        foreach (var exclusion in network.Exclusions)
+        {
+            ips.AddRange(await GetIpRange( IPAddress.Parse(exclusion.StartIpAddress).GetAddressBytes(), 
+                IPAddress.Parse(exclusion.EndIpAddress).GetAddressBytes()));
+        }
+
+        return ips;
     }
 }

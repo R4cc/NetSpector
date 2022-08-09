@@ -1,10 +1,10 @@
 ﻿@page "/network/create"
 @using System.Net
+@using System.Text
 
 @inject IUnitOfWork _uow
 @inject NavigationManager Nav
 @inject NotificationService NotificationService
-
 
 @if (_network is null)
 {
@@ -12,7 +12,6 @@
 }
 else
 {
-    
     <div class="container" style="max-width: 40em">
         <div class="row" style="margin-bottom: 1em;">
             <div class="col">
@@ -39,13 +38,43 @@ else
                 <RadzenTextBox Style="width: 100%" @bind-Value="_network.IpNetworkId" Placeholder="192.168.1.0"/>
             </div>
         </div>
-        <div class="row" style="margin-bottom: 1em;">
+        <div class="row" style="margin-bottom: 2em;">
             <div class="col">
                 <h4>Subnetmask</h4>
                 <RadzenNumeric Style="width: 100%" @bind-Value="_network.SubnetMask" Max=32 Min=1 Placeholder=24 />
             </div>
         </div>
-
+                <div class="row" style="margin-bottom: 1em;">
+                    <div class="col">
+                        <h3>IP Exclusion</h3>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td>Range / Device</td>
+                                <td>Note</td>
+                                <td>Controls</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exclusion in _network.Exclusions)
+                                {
+                                    <tr>
+                                        <td>@(exclusion.EndIpAddress is null ? exclusion.StartIpAddress : @exclusion.StartIpAddress + " - " +  @exclusion.EndIpAddress)</td>
+                                        <td>@exclusion.Note</td>
+                                        <td>
+                                            <RadzenButton Click=@(() => RemoveExclusion(exclusion)) ButtonStyle="ButtonStyle.Danger" Icon="close"/>
+                                        </td>
+                                    </tr>
+                                }
+                            <tr>
+                                <td><RadzenTextBox Placeholder="192.168.1.40-100" @bind-Value="_newExclusion.StartIpAddress" /></td>
+                                <td><RadzenTextBox Placeholder="e.g. Server IPs" @bind-Value="_newExclusion.Note"/></td>
+                                <td><RadzenButton Click="AddExclusion" ButtonStyle="ButtonStyle.Success" Icon="add"/></td>
+                            </tr>
+                            </tbody>
+                            </table>
+                    </div>
+                </div>
         <div class="row" >
             <div class="col" style="width: 100%">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Click=ValidSubmit Style="float: right;">Save</RadzenButton>
@@ -54,7 +83,9 @@ else
         </div>
     </div>
 }
+
 @code {
+    
     private Network _network = new();
     private string _errorMessage = string.Empty;
     private Exclusion _newExclusion = new();
@@ -81,15 +112,77 @@ else
     private async Task RemoveExclusion(Exclusion exclusion)
     {
         _network.Exclusions.Remove(exclusion);
-        StateHasChanged();
     }    
     
     private async Task AddExclusion()
     {
+        if (_newExclusion.StartIpAddress.Contains("-"))
+        {
+            var range = _newExclusion.StartIpAddress.Split("-");
+            var endOctets = range[1].Split(".");
+            string[] startIP = range[0].Split(".");
+            string[] endIP = range[0].Split(".");
+            
+            switch (endOctets.Count())
+            {
+                case 1:
+                    endIP[3] = endOctets[0];
+                    break;
+                case 2:
+                    endIP[3] = endOctets[0];
+                    endIP[2] = endOctets[1];
+                    break;
+                case 3:                    
+                    endIP[3] = endOctets[0];
+                    endIP[2] = endOctets[1];
+                    endIP[1] = endOctets[2];
+                    break;
+                case 4:
+                    endIP[3] = endOctets[0];
+                    endIP[2] = endOctets[1];
+                    endIP[1] = endOctets[2];
+                    endIP[0] = endOctets[3];
+                    break;
+            }
+            
+            _newExclusion.StartIpAddress = string.Join(".", startIP);
+            _newExclusion.EndIpAddress = string.Join(".", endIP);
+
+            if (!await ExclusionIsValid(_newExclusion))
+            {
+                return;
+            }
+            
+            _network.Exclusions.Add(_newExclusion);
+            _newExclusion = new();
+            return;
+        }
+        
         _network.Exclusions.Add(_newExclusion);
         _newExclusion = new();
-        StateHasChanged();
     }
+
+    private async Task<bool> ExclusionIsValid(Exclusion exclusion)
+    {
+        if (String.IsNullOrEmpty(exclusion.StartIpAddress))
+        {
+            _errorMessage = "Start address cannot be null!";
+            return false;
+        }
+
+        try
+        {
+            IPAddress.Parse(exclusion.StartIpAddress);
+        }
+        catch
+        {
+            _errorMessage = "Start IP is invalid";
+            return false;
+        }
+
+        _errorMessage = null;
+        return true;
+    } 
 
     private async Task<bool> IsValid()
     {

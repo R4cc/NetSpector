@@ -152,7 +152,9 @@
       <workItem from="1659696936000" duration="9528000" />
       <workItem from="1659937917380" duration="6662000" />
       <workItem from="1659960900549" duration="386000" />
-      <workItem from="1659961328508" duration="1254000" />
+      <workItem from="1659961328508" duration="7911000" />
+      <workItem from="1660024581642" duration="3855000" />
+      <workItem from="1660032318144" duration="777000" />
     </task>
     <servers />
   </component>
@@ -163,24 +165,6 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.UI/Pages/Network/NetworkCreate.razor</url>
-          <line>110</line>
-          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.UI\Pages\Network\NetworkCreate.razor" initialLine="123" isMultiMethodBreakpoint="true">
-            <option name="multiMethodBreakpoint" value="true" />
-            <startOffsets>
-              <option value="-1" />
-            </startOffsets>
-            <endOffsets>
-              <option value="-1" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="NetworkId" />

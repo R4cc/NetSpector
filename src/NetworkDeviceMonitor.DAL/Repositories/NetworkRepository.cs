@@ -22,6 +22,7 @@ public class NetworkRepository : INetworkRepository
     {
         return await _context.Networks
             .Include(n => n.Devices)
+            .Include(n => n.Exclusions)
             .FirstOrDefaultAsync(n => n.NetworkId == networkId);
     }
     
