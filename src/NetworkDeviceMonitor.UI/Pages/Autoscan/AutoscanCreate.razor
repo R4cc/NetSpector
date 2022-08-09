@@ -14,10 +14,15 @@ else
 {
     
     <div class="container" style="max-width: 40em">
-        <div class="row" style="margin-bottom: 1em;">
+        <div class="row">
             <div class="col">
                 <h2>Create an Autoscan</h2>
-                <label style="color: red">Application must be restarted in order for new autoscans to work!</label>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
+                <RadzenIcon Icon="report" IconStyle="IconStyle.Danger" Style="vertical-align: middle"/>
+                <label style="color: red; vertical-align: middle; font-weight: bold">Application must be restarted in order for new autoscans to work!</label>
             </div>
         </div>
         @if (_errorMessage is not null)
@@ -40,9 +45,16 @@ else
                                 Change="@(args => OnDropDownChange(args))"/>
             </div>
         </div>
-        <div class="row" style="margin-bottom: 1em;">
+        <div class="row" >
             <div class="col">
                 <h4>Schedule</h4>
+            </div>
+            <div class="col">
+                <RadzenLink Icon="" Style="float: right" Text="Need Help?" Path="https://crontab.guru/" target="_blank"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col">
                 <RadzenTextBox Style="width: 100%" @bind-Value="_scan.CronSchedule" Placeholder="50 * * * *"/>
             </div>
         </div>

@@ -28,24 +28,28 @@ else
         @foreach(var network in _networks)
         {
             <div class="col" style="max-width: 25em; min-width: 25em">
-                <RadzenCard Style="width: 100%">
+                <RadzenCard Style="width: 100%" class="cardselect" @onclick="(() => LoadNetwork(network.NetworkId))">
                     <div class="row" style="margin-bottom: 0.5em">
-                        <h2>@network.Name</h2>
+                        <div class="col" style="float: left">
+                            <h2>@network.Name</h2>
+                            <hr/>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <h4>Network ID: </h4>
-                            <h4>Device Count: </h4>
+                            <h4>Network ID</h4>
                         </div>
                         <div class="col">
-                            <h4 style="font-weight: 400">@network.IpNetworkId / @network.SubnetMask</h4>
-                            <h4 style="font-weight: 400">@network.Devices.Count</h4>
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@network.IpNetworkId"/>
                         </div>
                     </div>
-                    <hr/>
                     <div class="row">
                         <div class="col">
-                            <RadzenButton Click="(() => LoadNetwork(network.NetworkId))" Style="width: 100%">Details</RadzenButton>
+                            <h4>Device Count</h4>
+                        </div>
+                        <div class="col">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@network.Devices.Count.ToString()"/>
+                            <RadzenIcon Style="float: right" Icon="navigate_next"/>
                         </div>
                     </div>
                 </RadzenCard>
@@ -54,6 +58,7 @@ else
     </div>
 
 }
+
 
 @if(_autoscans is null)
 {
@@ -77,43 +82,45 @@ else
     {
         <div class="col" style="max-width: 25em; min-width: 25em">
           <RadzenCard Style="width: 100%">
-                <div class="row" style="margin-bottom: 0.5em;">
-                    <div class="col-10">
-                        <h2>@scan.Network.IpNetworkId</h2>
+              <div class="row" style="margin-bottom: 0.5em;">
+                  <div class="col">
+                      <h2>@scan.Network.IpNetworkId</h2>
+                      <hr/>
+                  </div>
+              </div>
+              <div class="row">
+                    <div class="col">
+                        <h4>Next Scan</h4>
                     </div>
-                    <div class="col-2">
-                        <RadzenSwitch Style="margin-left: -2em; vertical-align: middle" @bind-Value="scan.IsActive"/>
+                    <div class="col">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@(scan.NextExecute.Date == DateTime.Today ? "Today " + scan.NextExecute.ToString("H:mm") : scan.NextExecute.ToString("g"))"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <h4>Next Scan: </h4>
+                        <h4>Last Scanned</h4>
                     </div>
                     <div class="col">
-                        <h4 style="font-weight: 400">@(scan.NextExecute.Date == DateTime.Today ? "Today " + scan.NextExecute.ToString("H:mm") : scan.NextExecute.ToString("g"))</h4>
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@(scan.LastExecuted is null ? "N/A" : (scan.LastExecuted.Value.Date == System.DateTime.Today ? "Today " + System.Convert.ToDateTime(scan.LastExecuted).ToString("H:mm") : (Convert.ToDateTime(scan.LastExecuted)).ToString("g")))"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <h4>Last Scanned: </h4>
+                        <h4>Status</h4>
                     </div>
-                    <div class="col">
-                        <h4 style="font-weight: 400">@(scan.LastExecuted is null ? "N/A" : (scan.LastExecuted.Value.Date == System.DateTime.Today ? "Today " + System.Convert.ToDateTime(scan.LastExecuted).ToString("H:mm") : (Convert.ToDateTime(scan.LastExecuted)).ToString("g")))</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Status: </h4>
-                    </div>
-                    <div class="col">
-                        <h4 style="font-weight: 400"><RadzenBadge BadgeStyle="@(scan.IsActive ? BadgeStyle.Primary : BadgeStyle.Danger)" Text="@(scan.IsActive ? "ACTIVE" : "INACTIVE")"/></h4>
+                    <div class="col-5">
+                         <RadzenSwitch Style="margin-left: -2em; vertical-align: middle" @bind-Value="scan.IsActive" Change="@(() => UpdateScan(scan))"/>
                     </div>
                 </div>
-            </RadzenCard>
+          </RadzenCard>
         </div>
     }
 </div>
 }
+
+<style>
+
+</style>
 
 @code{
     private List<Domain.Models.Network> _networks;
@@ -139,4 +146,10 @@ else
     {
         nav.NavigateTo($"/network/{networkId}");
     }
+    
+    private async Task UpdateScan(Scan scan)
+    {
+        await _uow.IScanRepository.Update(scan);
+        await _uow.SaveChangesAsync();
+    }  
 }

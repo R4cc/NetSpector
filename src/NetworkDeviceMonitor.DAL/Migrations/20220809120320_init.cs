@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,7 +71,8 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     IpNetworkId = table.Column<string>(type: "TEXT", nullable: true),
                     SubnetMask = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    LastScanned = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -198,6 +199,7 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     FirstSeen = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ManufacturerId = table.Column<int>(type: "INTEGER", nullable: true),
                     NetworkId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsOnline = table.Column<bool>(type: "INTEGER", nullable: false),
                     NetworkId1 = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -217,6 +219,28 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Devices_Networks_NetworkId1",
                         column: x => x.NetworkId1,
+                        principalTable: "Networks",
+                        principalColumn: "NetworkId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Exclusion",
+                columns: table => new
+                {
+                    ExclusionId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StartIpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    EndIpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    NetworkId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Note = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exclusion", x => x.ExclusionId);
+                    table.ForeignKey(
+                        name: "FK_Exclusion_Networks_NetworkId",
+                        column: x => x.NetworkId,
                         principalTable: "Networks",
                         principalColumn: "NetworkId",
                         onDelete: ReferentialAction.Cascade);
@@ -254,8 +278,8 @@ namespace NetworkDeviceMonitor.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Networks",
-                columns: new[] { "NetworkId", "IpNetworkId", "Name", "SubnetMask" },
-                values: new object[] { 1, "192.168.0.1", "Network #1", 24 });
+                columns: new[] { "NetworkId", "IpNetworkId", "LastScanned", "Name", "SubnetMask" },
+                values: new object[] { 1, "192.168.0.1", null, "Network #1", 24 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -310,6 +334,11 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                 column: "NetworkId1");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Exclusion_NetworkId",
+                table: "Exclusion",
+                column: "NetworkId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Scans_NetworkId",
                 table: "Scans",
                 column: "NetworkId",
@@ -341,6 +370,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Devices");
+
+            migrationBuilder.DropTable(
+                name: "Exclusion");
 
             migrationBuilder.DropTable(
                 name: "Scans");

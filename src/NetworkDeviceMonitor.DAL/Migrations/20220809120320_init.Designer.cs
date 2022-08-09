@@ -11,8 +11,8 @@ using NetworkDeviceMonitor.DAL.Data;
 namespace NetworkDeviceMonitor.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220804085234_Add state to device")]
-    partial class Addstatetodevice
+    [Migration("20220809120320_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -262,6 +262,31 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     b.ToTable("Devices");
                 });
 
+            modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Exclusion", b =>
+                {
+                    b.Property<int>("ExclusionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("EndIpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NetworkId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StartIpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ExclusionId");
+
+                    b.HasIndex("NetworkId");
+
+                    b.ToTable("Exclusion");
+                });
+
             modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Manufacturer", b =>
                 {
                     b.Property<int>("ManufacturerId")
@@ -289,6 +314,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("IpNetworkId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastScanned")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -419,6 +447,17 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     b.Navigation("Network");
                 });
 
+            modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Exclusion", b =>
+                {
+                    b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", "Network")
+                        .WithMany("Exclusions")
+                        .HasForeignKey("NetworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Network");
+                });
+
             modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Scan", b =>
                 {
                     b.HasOne("NetworkDeviceMonitor.Domain.Models.Network", "Network")
@@ -438,6 +477,8 @@ namespace NetworkDeviceMonitor.DAL.Migrations
             modelBuilder.Entity("NetworkDeviceMonitor.Domain.Models.Network", b =>
                 {
                     b.Navigation("Devices");
+
+                    b.Navigation("Exclusions");
 
                     b.Navigation("Scan");
                 });

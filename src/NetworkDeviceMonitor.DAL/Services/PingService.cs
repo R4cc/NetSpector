@@ -114,6 +114,7 @@ public class PingService
             devicesToUpdate.Add(device);
         });
 
+        network.LastScanned = scanDateTime;
         network.Devices.AddRange(devicesToUpdate);
         network.Devices.AddRange(devicesToCreate);
         
@@ -203,6 +204,12 @@ public class PingService
         List<IPAddress> ips = new();
         foreach (var exclusion in network.Exclusions)
         {
+            if (exclusion.EndIpAddress is null)
+            {
+                ips.Add(IPAddress.Parse(exclusion.StartIpAddress));
+                continue;
+            }
+            
             ips.AddRange(await GetIpRange( IPAddress.Parse(exclusion.StartIpAddress).GetAddressBytes(), 
                 IPAddress.Parse(exclusion.EndIpAddress).GetAddressBytes()));
         }

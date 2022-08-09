@@ -14,4 +14,5 @@ public class Network
     public Scan Scan { get; set; }
     public List<Device> Devices { get; set; } = new();
     public List<Exclusion> Exclusions { get; set; } = new();
+    public DateTime? LastScanned { get; set; }
 }

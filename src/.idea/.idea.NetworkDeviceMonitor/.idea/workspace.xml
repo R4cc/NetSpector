@@ -154,7 +154,8 @@
       <workItem from="1659960900549" duration="386000" />
       <workItem from="1659961328508" duration="7911000" />
       <workItem from="1660024581642" duration="3855000" />
-      <workItem from="1660032318144" duration="777000" />
+      <workItem from="1660032318144" duration="946000" />
+      <workItem from="1660034038441" duration="13939000" />
     </task>
     <servers />
   </component>
@@ -165,6 +166,23 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/NetworkDeviceMonitor.DAL/Services/PingService.cs</url>
+          <line>212</line>
+          <properties documentPath="C:\Users\2109\Documents\Github\NetSpector\src\NetworkDeviceMonitor.DAL\Services\PingService.cs" initialLine="206" containingFunctionPresentation="method 'GetExcludedIps'">
+            <startOffsets>
+              <option value="7715" />
+            </startOffsets>
+            <endOffsets>
+              <option value="7884" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#NetworkDeviceMonitor.Domain.Models.Scan" memberName="NetworkId" />

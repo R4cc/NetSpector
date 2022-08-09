@@ -14,11 +14,124 @@ else
 {
 <div class="container">
     <div class="row">
-        <h2>Network Devices</h2>
-        <h4>@_devices.Count Devices</h4>
-        <RadzenButton BusyText="Scanning ..." IsBusy=@_processing Click=@ScanNetwork Text="Scan Network" Style="max-width: 10em; margin-bottom: 1em; margin-left: 1em"/>
+        <h1 style="font-size: 3em;">@_network.Name</h1>
+    </div>
+    <div class="row" style="margin-bottom: 1em">
+        <h2 >Network Information</h2>
+    </div>
+    <div class="row" style="margin-bottom: 2em; width: 100%">
+        <div class="col" style="margin-bottom: 1.2em; min-width: 23em;">
+            <RadzenCard Style="width: 100%; min-height: 13.5em">
+                <div class="row" >
+                    <div class="col">
+                        <h2>@_network.Name Info</h2>
+                        <hr/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Network ID</h4>
+                    </div>
+                    <div class="col">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@_network.IpNetworkId"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Device Count</h4>
+                    </div>
+                    <div class="col">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@_devices.Count.ToString()"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4>Last Scanned</h4>
+                    </div>
+                    <div class="col">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@(_network.LastScanned is null ? "N/A" : Convert.ToDateTime(_network.LastScanned).ToString("g"))"/>
+                    </div>
+                </div>
+            </RadzenCard>
         </div>
-        <div class="row">
+        <div class="col" style="margin-bottom: 1.2em; min-width: 23em;">
+          <RadzenCard Style="width: 100%; min-height: 13.5em">
+              <div class="row">
+                  <div class="col">
+                      <h2>Autoscan</h2>
+                        <hr/>
+                  </div>
+              </div>
+              @if (_network.Scan is null)
+              {
+                  <a style="margin-bottom: 2em">No autoscan setup...</a>
+                  <RadzenButton Click=@(() => NavTo("/autoscan/create")) Text="Setup Autoscan" Style="min-width: 12em"/>
+              }
+              else{
+              <div class="row">
+                  <div class="col">
+                      <h4>Next Scan</h4>
+                  </div>
+                  <div class="col">
+                      <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@(_network.Scan.NextExecute.Date == DateTime.Today ? "Today " + _network.Scan.NextExecute.ToString("H:mm") : _network.Scan.NextExecute.ToString("g"))"/>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col">
+                      <h4>Last Scanned</h4>
+                  </div>
+                  <div class="col">
+                      <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@(_network.Scan.LastExecuted is null ? "N/A" : (_network.Scan.LastExecuted.Value.Date == System.DateTime.Today ? "Today " + System.Convert.ToDateTime(_network.Scan.LastExecuted).ToString("H:mm") : (Convert.ToDateTime(_network.Scan.LastExecuted)).ToString("g")))"/>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col">
+                      <h4>Status</h4>
+                  </div>
+                  <div class="col-5">
+                       <RadzenSwitch Style="margin-left: -2em; vertical-align: middle" @bind-Value="_network.Scan.IsActive" Change="@(() => UpdateScan(_network.Scan))"/>
+                  </div>
+              </div>
+              }
+          </RadzenCard>
+        </div>
+        <div class="col" style="min-width: 23em;" >
+            <RadzenCard Style="width: 100%; min-height: 13.5em; max-height: 13.5em">                
+                <div class="row" style="margin-bottom: 0.5em;">
+                    <div class="col">
+                        <h2>IP Exclusions</h2>
+                        <hr/>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0.5em; overflow: scroll">
+                    <div class="col">
+                        @if(_network.Exclusions.Count != 0){
+                            @foreach (var exclusion in _network.Exclusions)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Style="margin-right: 0.2em; margin-bottom: 0.5em" Text="@(exclusion.EndIpAddress is null ? exclusion.StartIpAddress : exclusion.StartIpAddress + "-" + exclusion.EndIpAddress)"/>
+                            }
+                        }
+                        else
+                        {
+                            <a>No exclusions setup...</a>
+                        }
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+    </div>
+    <div class="row">
+        <h2>Network Devices</h2>
+    </div>
+    <div class="row" style="margin-bottom: 2em;">
+        <div class="col">
+            <RadzenButton BusyText="Scanning ..." IsBusy=@_processing Click=@ScanNetwork Text="Scan Network" Style="float: left; min-width: 12em"/>
+        </div>
+    </div>
+                
+    @if(_devices.Count != 0)
+    {
+    <div class="row">
         <div class="col">
             <table class="table">
                 <thead>
@@ -41,7 +154,7 @@ else
                         <td><RadzenBadge BadgeStyle="@(device.IsOnline ? BadgeStyle.Success : BadgeStyle.Danger)" Text="@(device.IsOnline ? "ONLINE" : "OFFLINE")"/></td>
                         <td>@device.LastSeen.ToString("g")</td>
                         <td>
-                            <RadzenButton Click=@(() => PingDevice(device.DeviceId)) Icon="contactless"/>
+                            <RadzenButton Click=@(() => PingDevice(device.DeviceId)) Icon="cable"/>
                         </td>
                     </tr>
                 }
@@ -49,23 +162,35 @@ else
             </table>
         </div>
     </div>
-</div>
+    }
+    else
+    {
+        <a>No devices found...</a>
+    }
+    </div>
 }
 
 @code {
     [Parameter]
     public int networkId { get; set; }
+    public Network _network { get; set; }
     private bool _processing;
     private List<Device> _devices;
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadNetwork();
         await LoadDevices();
     }
 
     private async Task LoadDevices()
     {
         _devices = (await _uow.IDeviceRepository.GetDevicesFromNetworkId(networkId));
+    }        
+    
+    private async Task LoadNetwork()
+    {
+        _network = (await _uow.INetworkRepository.GetNetworkFromId(networkId));
     }    
     
     private async Task EditDevice(int deviceId)
@@ -93,4 +218,14 @@ else
         _processing = false;
     }
     
+    private async Task UpdateScan(Scan scan)
+    {
+        await _uow.IScanRepository.Update(scan);
+        await _uow.SaveChangesAsync();
+    }    
+    
+    private async Task NavTo(string url)
+    {
+        Nav.NavigateTo(url);
+    }    
 }

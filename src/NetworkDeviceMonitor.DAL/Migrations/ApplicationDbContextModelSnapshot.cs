@@ -314,6 +314,9 @@ namespace NetworkDeviceMonitor.DAL.Migrations
                     b.Property<string>("IpNetworkId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("LastScanned")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
