@@ -66,7 +66,7 @@ public class PingService
             // set manufacturer if mac is set
             if (manufacturers is not null && !String.IsNullOrEmpty(macAddressFromIp))
             {
-                manufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == macAddressFromIp.Substring(0, 8))?.ManufacturerId;
+                manufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == macAddressFromIp.Substring(0, 8).ToUpper())?.ManufacturerId;
             }
             
             // New device found; create it
@@ -103,7 +103,7 @@ public class PingService
             // Set manufacturer
             if (!String.IsNullOrEmpty(device.MacAddress) && device.ManufacturerId is null)
             {
-                device.ManufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == device.MacAddress.Substring(0, 8))?.ManufacturerId;
+                device.ManufacturerId = manufacturers.FirstOrDefault(x => x.Prefix == device.MacAddress.Substring(0, 8).ToUpper())?.ManufacturerId;
             }
             
             device.LastSeen = scanDateTime;
